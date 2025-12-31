@@ -1,0 +1,77 @@
+content { 
+  id string pk
+  sectionTitle string
+  sectionDescription string
+  category string
+  imagePath string
+}
+
+subContent {
+  id string pk
+  contentId string fk
+  subSectionTitle string
+  subSectionDescription string
+}
+
+faculty{
+  id string
+  name string
+  department string
+  qualifications string
+  designation [string]
+  email string
+  contact string
+  awards [string]
+  imagePath string
+}
+
+courses{
+  id string
+  courseName string
+  courseSpecializationName string
+  specializationCode string
+}
+
+affiliatedColleges{
+  id string
+  collegeCode string
+  collgeName string
+  courseOffered [string]
+  district string
+  websiteLink string
+}
+
+autonomousColleges{
+  id string
+  collegeCode string
+  collgeName string
+  district string
+  websiteLink string
+}
+
+phdAwards{
+  id string
+  HTNo string
+  studentName string
+  branch string
+  titleofThesis string
+  dateofNotification Date
+  nameofSupervisor string
+  nameofCoSupervisor string
+}
+
+accreditations{
+  id string
+  title string
+  pdfPath string
+}
+
+notifications{
+  id string
+  date Date
+  title string
+  department string
+  filePath string
+}
+
+content.id < subContent.contentId
