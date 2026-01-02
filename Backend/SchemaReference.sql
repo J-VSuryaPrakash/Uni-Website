@@ -37,7 +37,7 @@ CREATE TABLE content_blocks (
   id SERIAL PRIMARY KEY,
   section_id INT REFERENCES page_sections(id) ON DELETE CASCADE,
   block_type VARCHAR(30) CHECK (
-    block_type IN ('text','image','gallery','list','table','html')
+    block_type IN ('text','image','list','html')
   ),
   content JSONB NOT NULL,
   position INT NOT NULL,
@@ -56,11 +56,10 @@ CREATE TABLE designations (
 CREATE TABLE departments (
   id SERIAL PRIMARY KEY,
   name VARCHAR(200) NOT NULL,
-  college_id INT REFERENCES colleges(id) ON DELETE CASCADE
 );
 
 //faculty
-CREATE TABLE faculty (
+CREATE TABLE directorates (
   id SERIAL PRIMARY KEY,
   name VARCHAR(200) NOT NULL,
   designation_id INT REFERENCES designations(id),
@@ -73,9 +72,9 @@ CREATE TABLE faculty (
 //faculty pages
 CREATE TABLE page_faculty (
   page_id INT REFERENCES pages(id) ON DELETE CASCADE,
-  faculty_id INT REFERENCES faculty(id) ON DELETE CASCADE,
+  directorates_id INT REFERENCES directorates(id) ON DELETE CASCADE,
   position INT,
-  PRIMARY KEY (page_id, faculty_id)
+  PRIMARY KEY (page_id, directorates_id)
 );
 
 //notifications
@@ -107,5 +106,4 @@ CREATE TABLE admins (
   name VARCHAR(100),
   email VARCHAR(150) UNIQUE,
   password_hash TEXT,
-  role VARCHAR(30) CHECK (role IN ('super_admin','editor','viewer'))
 );
