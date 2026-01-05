@@ -114,8 +114,8 @@ model Media {
 }
 
 model Admin {
-  id           Int     @id @default(autoincrement())
-  name         String? @db.VarChar(100)
-  email        String? @unique @db.VarChar(150)
-  passwordHash String?
+  id           Int    @id @default(autoincrement())
+  name         String @db.VarChar(100)
+  email        String @unique @db.VarChar(150)
+  passwordHash String
 }
