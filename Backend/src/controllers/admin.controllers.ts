@@ -7,7 +7,7 @@ import { authService } from "../services/auth.service";
 const registerAdmin = asyncHandler(async(req, res) => {
 
     const registerData: RegisterDTO = req.body
-
+    
     if(!registerData.name || !registerData.email || !registerData.password){
         throw new ApiError(400,"Admin details are required")
     }
@@ -25,13 +25,36 @@ const loginAdmin = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Email and password are required");
     }
 
-    const result = await authService.loginAdmin(loginData);
+    const { accessToken, refreshToken } = await authService.loginAdmin(loginData);
 
-    return res.status(200).json(new ApiResponse(200,result, "Admin logged in successfully"));
+    return res.status(200)
+        .cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: true
+        })
+        .cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true
+        })
+        .json(new ApiResponse(200,{accessToken, refreshToken}, "Admin logged in successfully"));
 })
 
+const logoutAdmin = asyncHandler(async(req, res) => {
+
+    return res.status(200)
+        .clearCookie("accessToken", {
+            httpOnly: true,
+            secure: true
+        })
+        .clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true
+        })
+        .json(new ApiResponse(200, {}, "Admin logged out successfully"));
+})
 
 export {
     registerAdmin,
-    loginAdmin
+    loginAdmin,
+    logoutAdmin
 }

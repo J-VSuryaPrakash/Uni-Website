@@ -3,19 +3,22 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { JWTPayload, LoginDTO, RegisterDTO } from "../types/models/auth.types";
 import { ApiError } from "../utils/apiError";
-import { env } from "../config/env.config";
+// import { env } from "../config/env.config";
 
 class AuthService {
     // Generate Access Token
     private generateAccessToken(payload: JWTPayload): string {
-        return jwt.sign(payload, env.ACCESS_TOKEN_SECRET, {
+        
+        const secret = process.env.ACCESS_TOKEN_SECRET || 'jntuk-secret-access-token';
+        return jwt.sign(payload, secret, {
             expiresIn: '1d',
         });
     }
 
     // Generate Refresh Token
     private generateRefreshToken(payload: JWTPayload): string {
-        return jwt.sign(payload, env.REFRESH_TOKEN_SECRET, {
+        const secret = process.env.REFRESH_TOKEN_SECRET || 'jntuk-secret-refresh-token'
+        return jwt.sign(payload, secret, {
             expiresIn: '10d',
         });
     }
@@ -38,18 +41,18 @@ class AuthService {
     public async loginAdmin(loginData: LoginDTO) {
 
         const {email, password} = loginData
-
+        // Find admin by email
         const admin = await prisma.admin.findUnique({ where: { email } });
 
         if (!admin) {
         throw new ApiError(401,"Invalid credentials");
         }
-
+        // Compare password
         const isValid = await this.comparePassword(password, admin.passwordHash);
         if (!isValid) {
         throw new ApiError(401,"Invalid credentials");
         }
-
+        // Generate tokens
         const payload: JWTPayload = {
         id: admin.id,
         name: admin.name,
