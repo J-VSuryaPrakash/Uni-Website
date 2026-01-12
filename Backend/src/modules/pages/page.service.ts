@@ -2,8 +2,8 @@ import prisma from "../../DB/prisma";
 import { ApiError } from "../../utils/apiError";
 import type {
 	CreatePageDTO,
-	UpdatePageDTO,
 	MovePageDTO,
+	UpdatePageDTO,
 } from "./page.validation";
 
 export default class PageService {
@@ -165,6 +165,12 @@ export default class PageService {
 			include: {
 				sections: {
 					orderBy: { position: "asc" },
+					include: {
+						contentBlocks: {
+							where: { isVisible: true },
+							orderBy: { position: "asc" },
+						},
+					},
 				},
 				parent: {
 					select: {

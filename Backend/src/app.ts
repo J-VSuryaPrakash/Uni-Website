@@ -11,6 +11,7 @@ import publicPageRoutes from "./modules/pages/page.route";
 import designationRoutes from "./modules/designation/designation.route";
 import pageSectionRoutes from "./modules/pageSections/pageSections.route";
 import departmentRoutes from "./modules/department/department.route";
+import contentBlockRoutes from "./modules/ContentBlocks/constentBlocks.route";
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(helmet());
 app.use(errorMiddleware);
 
 
-// app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/admin/menus", menuRoutes);
 app.use("/api/v1/menus", publicMenuRoutes);
 app.use("/api/v1/admin/pages", pageRoutes);
@@ -29,5 +30,6 @@ app.use("/api/v1/pages", publicPageRoutes);
 app.use("/api/v1/admin/designations", designationRoutes);
 app.use("/api/v1/admin/", pageSectionRoutes);
 app.use("/api/v1/admin/departments", departmentRoutes);
+app.use("/api/v1/admin", contentBlockRoutes);
 
 export default app;
