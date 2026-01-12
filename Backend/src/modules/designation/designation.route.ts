@@ -11,9 +11,9 @@ import {
 const router = Router();
 
 // Admin routes
-router.post("/", createDesignation);
-router.put("/:id",  updateDesignation);
-router.get("/",  getAllDesignations);
-router.delete("/:id", deleteDesignation);
+router.post("/", authMiddleware, createDesignation);
+router.put("/:id", authMiddleware, updateDesignation);
+router.get("/", authMiddleware, getAllDesignations);
+router.delete("/:id", authMiddleware, deleteDesignation);
 
 export default router;
