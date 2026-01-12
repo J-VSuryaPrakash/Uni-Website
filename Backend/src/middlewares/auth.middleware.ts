@@ -13,6 +13,14 @@ export const authMiddleware = (
     res: Response,
     next: NextFunction
 ) => {
+
+    const mode = process.env.NODE_ENV || "production";
+    if (mode === "development") {
+        // In development mode, bypass authentication
+        req.admin = { id: 1 }; // assuming admin with ID 1
+        return next();
+    }
+
     const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
         throw new ApiError(401, "user is not authenticated");
