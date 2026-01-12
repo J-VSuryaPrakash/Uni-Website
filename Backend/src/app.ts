@@ -10,6 +10,7 @@ import pageRoutes from "./modules/pages/page.route";
 import publicPageRoutes from "./modules/pages/page.route";
 import designationRoutes from "./modules/designation/designation.route";
 import departmentRoutes from "./modules/department/department.route";
+import directorateRoutes from "./modules/directorate/directorate.router";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api/v1/admin/pages", pageRoutes);
 app.use("/api/v1/pages", publicPageRoutes);
 app.use("/api/v1/admin/designations", designationRoutes);
 app.use("/api/v1/admin/departments", departmentRoutes);
+app.use("/api/v1/admin/directorates", directorateRoutes);
 
 export default app;
