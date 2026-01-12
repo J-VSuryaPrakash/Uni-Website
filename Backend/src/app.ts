@@ -9,7 +9,7 @@ import adminRoutes from "./routes/admin.routes";
 import pageRoutes from "./modules/pages/page.route";
 import publicPageRoutes from "./modules/pages/page.route";
 import designationRoutes from "./modules/designation/designation.route";
-
+import departmentRoutes from "./modules/department/department.route";
 
 const app = express();
 
@@ -26,5 +26,6 @@ app.use("/api/v1/menus", publicMenuRoutes);
 app.use("/api/v1/admin/pages", pageRoutes);
 app.use("/api/v1/pages", publicPageRoutes);
 app.use("/api/v1/admin/designations", designationRoutes);
+app.use("/api/v1/admin/departments", departmentRoutes);
 
 export default app;
