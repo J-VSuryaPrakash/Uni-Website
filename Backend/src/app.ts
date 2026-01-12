@@ -6,6 +6,9 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import menuRoutes from "./modules/menu/menu.route";
 import publicMenuRoutes from "./modules/menu/menu.route";
 import adminRoutes from "./routes/admin.routes";
+import pageRoutes from "./modules/pages/page.route";
+import publicPageRoutes from "./modules/pages/page.route";
+
 
 
 const app = express();
@@ -20,5 +23,7 @@ app.use(errorMiddleware);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/admin/menus", menuRoutes);
 app.use("/api/v1/menus", publicMenuRoutes);
+app.use("/api/v1/admin/pages", pageRoutes);
+app.use("/api/v1/pages", publicPageRoutes);
 
 export default app;

@@ -7,7 +7,7 @@ import { CreateMenuSchema, UpdateMenuSchema } from "./menu.validation";
 const menuService = new MenuService();
 
 export const createMenu = asyncHandler(async (req: Request, res: Response) => {
-	const data = CreateMenuSchema.parse(req.body);
+	const data = await CreateMenuSchema.parseAsync(req.body);
 
 	const newMenu = await menuService.CreateMenu(data);
 
@@ -18,7 +18,7 @@ export const createMenu = asyncHandler(async (req: Request, res: Response) => {
 
 export const updateMenu = asyncHandler(async (req: Request, res: Response) => {
     const id = Number(req.params.id);
-    const data = UpdateMenuSchema.parse(req.body);
+    const data = await UpdateMenuSchema.parseAsync(req.body);
 
     const updatedMenu = await menuService.UpdateMenu(id, data);
 
