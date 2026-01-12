@@ -31,5 +31,7 @@ app.use("/api/v1/pages", publicPageRoutes);
 app.use("/api/v1/admin/designations", designationRoutes);
 app.use("/api/v1/admin/", pageSectionRoutes);
 app.use("/api/v1/admin/departments", departmentRoutes);
+app.use("/api/v1/admin", contentBlockRoutes);
+app.use("/api/v1/admin/directorates", directorateRoutes);
 
 export default app;
