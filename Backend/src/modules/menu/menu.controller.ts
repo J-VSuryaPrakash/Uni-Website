@@ -77,3 +77,20 @@ export const getPublicMenus = asyncHandler(async (req: Request, res: Response) =
         new ApiResponse(200, publicMenus, "Public menus retrieved successfully")
     );
 });
+
+export const getMenuTreeById = asyncHandler(async (req: Request, res: Response) => {
+    const menuID = Number(req.params.id);
+    const menuTree = await menuService.getMenuTreeById(menuID);
+
+    res.status(200).json(
+        new ApiResponse(200, menuTree, "Menu tree retrieved successfully")
+    );
+});
+
+export const getMenuTree = asyncHandler(async (req: Request, res: Response) => {
+    const menuTree = await menuService.getMenuTree();
+
+    res.status(200).json(
+        new ApiResponse(200, menuTree, "Menu tree retrieved successfully")
+    );
+});

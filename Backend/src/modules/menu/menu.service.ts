@@ -89,4 +89,58 @@ export default class MenuService {
 			orderBy: { position: "asc" },
 		});
 	}
+
+	async getMenuTreeById(menuID: number) {
+		const menuTree = await prisma.menu.findUnique({
+			where: { id: menuID },
+			include: {
+				pages: {
+					where: {
+						parentId: null,
+						status: "published",
+					},
+					orderBy: { position: "asc" },
+					include: {
+						children: {
+							where: { status: "published" },
+							orderBy: { position: "asc" },
+						},
+					},
+				},
+			},
+		});
+
+		if (!menuTree) {
+			throw new ApiError(404, "Menu not found");
+		}
+
+		return menuTree;
+	}
+
+	async getMenuTree() {
+		const menusTree = await prisma.menu.findMany({
+			where: { isActive: true },
+			include: {
+				pages: {
+					where: {
+						parentId: null,
+						status: "published",
+					},
+					orderBy: { position: "asc" },
+					include: {
+						children: {
+							where: { status: "published" },
+							orderBy: { position: "asc" },
+						},
+					},
+				},
+			},
+		});
+
+		if (!menusTree) {
+			throw new ApiError(404, "Menu not found");
+		}
+
+		return menusTree;
+	}
 }

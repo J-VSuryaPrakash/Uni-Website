@@ -14,6 +14,9 @@ import { authMiddleware } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
+// Public routes
+router.get("/slug/:slug", getPageBySlug);
+
 // Admin routes
 router.post("/", authMiddleware, createPage);
 router.get("/", authMiddleware, getAllpages);
@@ -23,7 +26,5 @@ router.delete("/:id", authMiddleware, deletePage);
 router.patch("/:id/move", authMiddleware, movePage);
 router.patch("/reorder", authMiddleware, reorderPages);
 
-// Public routes
-router.get("/:slug", getPageBySlug);
 
 export default router;
