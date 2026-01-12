@@ -25,13 +25,17 @@ export default class DesignationService {
     }
 
     async updateDesignation(id: number, data: UpdateDesignationDTO) {
-
+       
         const designation = await prisma.designation.findUnique({
             where: { id }
         });
-
+        
         if (!designation) {
-            throw new ApiError(404,"Designation not found");
+            throw new ApiError(404, "Designation not found");
+        }
+        
+        if (Object.keys(data).length === 0) {
+            throw new ApiError(400, "At least one field must be provided");
         }
 
         const updatedDesignation = await prisma.designation.update({
