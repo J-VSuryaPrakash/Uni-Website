@@ -1,67 +1,84 @@
-import type { Request, Response } from "express"; 
+import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { DirectorateService } from "./directorate.service";
-import { createDirectorateSchema, updateDirectorateSchema } from "./directorate.validation";
+import {
+    createDirectorateSchema,
+    updateDirectorateSchema,
+} from "./directorate.validation";
+import { ApiResponse } from "../../utils/apiResponse";
 
 const directorateService = new DirectorateService();
 
-export const createDirectorate = asyncHandler(async (req: Request, res: Response) => {
+export const createDirectorate = asyncHandler(
+    async (req: Request, res: Response) => {
+        const data = createDirectorateSchema.parse(req.body);
 
-    const data = createDirectorateSchema.parse(req.body);
+        const directorate = await directorateService.createDirectorate(data);
 
-    const directorate = await directorateService.createDirectorate(data);
+        res
+            .status(201)
+            .json(
+                new ApiResponse(201, directorate, "Directorate created successfully")
+            );
+    }
+);
 
-    res.status(201).json({
-        message: "Directorate created successfully",
-        data: directorate
-    });
-})
+export const getAllDirectorates = asyncHandler(
+    async (req: Request, res: Response) => {
+        const directorates = await directorateService.getAllDirectorates();
 
-export const getAllDirectorates = asyncHandler(async (req: Request, res: Response) => {
+        res
+            .status(200)
+            .json(
+                new ApiResponse(200, directorates, "Directorates fetched successfully")
+            );
+    }
+);
 
-    const directorates = await directorateService.getAllDirectorates();
+export const getDirectorateById = asyncHandler(
+    async (req: Request, res: Response) => {
+        const id = Number(req.params.id);
 
-    res.status(200).json({
-        message: "Directorates fetched successfully",
-        data: directorates
-    });
-});
+        const directorate = await directorateService.getDirectorateById(id);
 
-export const getDirectorateById = asyncHandler(async (req: Request, res: Response) => {
+        res
+            .status(200)
+            .json(
+                new ApiResponse(200, directorate, "Directorate fetched successfully")
+            );
+    }
+);
 
-    const id = Number(req.params.id);
+export const updateDirectorate = asyncHandler(
+    async (req: Request, res: Response) => {
+        const id = Number(req.params.id);
 
-    const directorate = await directorateService.getDirectorateById(id);
+        const data = updateDirectorateSchema.parse(req.body);
 
-    res.status(200).json({
-        message: "Directorate fetched successfully",
-        data: directorate
-    });
+        const directorate = await directorateService.updateDirectorate(id, data);
 
-})
+        res
+            .status(200)
+            .json(
+                new ApiResponse(200, directorate, "Directorate updated successfully")
+            );
+    }
+);
 
-export const updateDirectorate = asyncHandler(async (req: Request, res: Response) => {
+export const deleteDirectorate = asyncHandler(
+    async (req: Request, res: Response) => {
+        const id = Number(req.params.id);
 
-    const id = Number(req.params.id);
+        const deleteDirectorate = await directorateService.deleteDirectorate(id);
 
-    const data = updateDirectorateSchema.parse(req.body);
-
-    const directorate = await directorateService.updateDirectorate(id, data);
-
-    res.status(200).json({  
-        message: "Directorate updated successfully",
-        data: directorate
-    });
-});
-
-export const deleteDirectorate = asyncHandler(async (req: Request, res: Response) => {
-    
-    const id = Number(req.params.id);
-
-    const deleteDirectorate = await directorateService.deleteDirectorate(id);
-
-    res.status(200).json({
-        data: deleteDirectorate,
-        message: "Directorate deleted successfully"
-    });
-}); 
+        res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    deleteDirectorate,
+                    "Directorate deleted successfully"
+                )
+            );
+    }
+);
