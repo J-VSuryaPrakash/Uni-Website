@@ -14,6 +14,7 @@ model Menu {
   position  Int
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   pages     Page[]
 }
 
@@ -41,6 +42,7 @@ model PageSection {
   title         String        @db.VarChar(200)
   position      Int
   createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
   contentBlocks ContentBlock[]
   page          Page           @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }
@@ -53,6 +55,7 @@ model ContentBlock {
   position  Int
   isVisible Boolean     @default(true)
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
   section   PageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
@@ -95,14 +98,16 @@ model PageDirectorates {
 model Notification {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(300)
-  link        String?
+  link        String
   category    String?   @db.VarChar(50)
+  status      String    @default("open") @db.VarChar(20)
   priority    Int       @default(0)
   startsAt    DateTime?
   endsAt      DateTime?
   isScrolling Boolean   @default(false)
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
 }
 
 model Media {
@@ -111,6 +116,7 @@ model Media {
   type       String?  @db.VarChar(30)
   uploadedBy Int?
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Admin {
