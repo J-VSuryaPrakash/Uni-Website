@@ -13,6 +13,7 @@ import pageSectionRoutes from "./modules/pageSections/pageSections.route";
 import departmentRoutes from "./modules/department/department.route";
 import contentBlockRoutes from "./modules/ContentBlocks/constentBlocks.route";
 import directorateRoutes from "./modules/directorate/directorate.router";
+import pageDirectorateRoutes from "./modules/pageDirectorates/pageDirectorates.route";
 
 const app = express();
 
@@ -33,5 +34,6 @@ app.use("/api/v1/admin/", pageSectionRoutes);
 app.use("/api/v1/admin/departments", departmentRoutes);
 app.use("/api/v1/admin", contentBlockRoutes);
 app.use("/api/v1/admin/directorates", directorateRoutes);
+app.use("/api/v1/admin/page-directorates", pageDirectorateRoutes);
 
 export default app;
