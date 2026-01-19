@@ -70,6 +70,7 @@ model Department {
   id           Int           @id @default(autoincrement())
   name         String        @db.VarChar(200)
   directorates Directorate[]
+  notifications Notification[]
 }
 
 model Directorate {
@@ -98,8 +99,8 @@ model PageDirectorates {
 model Notification {
   id          Int       @id @default(autoincrement())
   title       String    @db.VarChar(300)
-  link        String
   category    String?   @db.VarChar(50)
+  departmentId Int?     
   status      String    @default("open") @db.VarChar(20)
   priority    Int       @default(0)
   startsAt    DateTime?
@@ -108,6 +109,8 @@ model Notification {
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
+  department  Department? @relation(fields: [departmentId], references: [id])
+  attachments  NotificationAttachment[]
 }
 
 model Media {
@@ -124,4 +127,15 @@ model Admin {
   name         String @db.VarChar(100)
   email        String @unique @db.VarChar(150)
   passwordHash String
+}
+
+model NotificationAttachment {
+  id              Int      @id @default(autoincrement())
+  notificationId  Int
+  title           String   @db.VarChar(300)
+  fileUrl         String   @db.VarChar(500)
+  position        Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  notification Notification @relation(fields: [notificationId],references: [id], onDelete: Cascade)
 }
