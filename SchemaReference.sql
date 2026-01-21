@@ -1,109 +1,141 @@
-// menues
-CREATE TABLE menus (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  slug VARCHAR(100) UNIQUE NOT NULL,
-  position INT NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
 
+datasource db {
+  provider = "postgresql"
+}
 
-// pages 
-CREATE TABLE pages (
-  id SERIAL PRIMARY KEY,
-  menu_id INT REFERENCES menus(id) ON DELETE SET NULL,
-  parent_id INT REFERENCES pages(id) ON DELETE CASCADE,
-  title VARCHAR(200) NOT NULL,
-  slug VARCHAR(200) NOT NULL,
-  position INT NOT NULL,
-  status VARCHAR(20) CHECK (status IN ('draft','published')) DEFAULT 'draft',
-  seo_meta JSONB,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
- 
-// pages sections
-CREATE TABLE page_sections (
-  id SERIAL PRIMARY KEY,
-  page_id INT REFERENCES pages(id) ON DELETE CASCADE,
-  title VARCHAR(200),
-  position INT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+model Menu {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
+  position  Int
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  pages     Page[]
+}
 
-//content blocks
-CREATE TABLE content_blocks (
-  id SERIAL PRIMARY KEY,
-  section_id INT REFERENCES page_sections(id) ON DELETE CASCADE,
-  block_type VARCHAR(30) CHECK (
-    block_type IN ('text','image','list','html')
-  ),
-  content JSONB NOT NULL,
-  position INT NOT NULL,
-  is_visible BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+model Page {
+  id           Int                @id @default(autoincrement())
+  menuId       Int?
+  parentId     Int?
+  title        String             @db.VarChar(200)
+  slug         String             @db.VarChar(200)
+  position     Int
+  status       String             @default("draft") @db.VarChar(20)
+  seoMeta      Json?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+  menu         Menu?              @relation(fields: [menuId], references: [id])
+  parent       Page?              @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children     Page[]             @relation("PageHierarchy")
+  directorates PageDirectorates[]
+  sections     PageSection[]
+}
 
-//designations
-CREATE TABLE designations (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(100) UNIQUE NOT NULL,
-  priority INT NOT NULL
-);
+model PageSection {
+  id            Int            @id @default(autoincrement())
+  pageId        Int
+  title         String        @db.VarChar(200)
+  position      Int
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  contentBlocks ContentBlock[]
+  page          Page           @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
 
-//departments
-CREATE TABLE departments (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(200) NOT NULL,
-);
+model ContentBlock {
+  id        Int         @id @default(autoincrement())
+  sectionId Int
+  blockType String      @db.VarChar(30)
+  content   Json
+  position  Int
+  isVisible Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  section   PageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
 
-//faculty
-CREATE TABLE directorates (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(200) NOT NULL,
-  designation_id INT REFERENCES designations(id),
-  department_id INT REFERENCES departments(id),
-  photo_url TEXT,
-  profile JSONB,
-  is_active BOOLEAN DEFAULT true
-);
+model Designation {
+  id           Int           @id @default(autoincrement())
+  title        String        @unique @db.VarChar(100)
+  priority     Int
+  directorates Directorate[]
+}
 
-//faculty pages
-CREATE TABLE page_faculty (
-  page_id INT REFERENCES pages(id) ON DELETE CASCADE,
-  directorates_id INT REFERENCES directorates(id) ON DELETE CASCADE,
-  position INT,
-  PRIMARY KEY (page_id, directorates_id)
-);
+model Department {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(200)
+  directorates Directorate[]
+  notifications Notification[]
+}
 
-//notifications
-CREATE TABLE notifications (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(300) NOT NULL,
-  link TEXT,
-  category VARCHAR(50),
-  priority INT DEFAULT 0,
-  starts_at TIMESTAMP,
-  ends_at TIMESTAMP,
-  is_scrolling BOOLEAN DEFAULT false,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+model Directorate {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(200)
+  designationId    Int?
+  departmentId     Int?
+  photoUrl         String?
+  profile          Json?
+  isActive         Boolean            @default(true)
+  department       Department?        @relation(fields: [departmentId], references: [id])
+  designation      Designation?       @relation(fields: [designationId], references: [id])
+  pageDirectorates PageDirectorates[]
+}
 
-//media
-CREATE TABLE media (
-  id SERIAL PRIMARY KEY,
-  url TEXT NOT NULL,
-  type VARCHAR(30),
-  uploaded_by INT,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+model PageDirectorates {
+  pageId        Int
+  directorateId Int
+  position      Int?
+  directorate   Directorate @relation(fields: [directorateId], references: [id], onDelete: Cascade)
+  page          Page        @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
-//admin
-CREATE TABLE admins (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100),
-  email VARCHAR(150) UNIQUE,
-  password_hash TEXT,
-);
+  @@id([pageId, directorateId])
+}
+
+model Notification {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(300)
+  category    String?   @db.VarChar(50)
+  departmentId Int?     
+  status      String    @default("open") @db.VarChar(20)
+  priority    Int       @default(0)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  isScrolling Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+  department  Department? @relation(fields: [departmentId], references: [id])
+  attachments  NotificationAttachment[]
+}
+
+model Media {
+  id         Int      @id @default(autoincrement())
+  url        String
+  type       String?  @db.VarChar(30)
+  uploadedBy Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
+model Admin {
+  id           Int    @id @default(autoincrement())
+  name         String @db.VarChar(100)
+  email        String @unique @db.VarChar(150)
+  passwordHash String
+}
+
+model NotificationAttachment {
+  id              Int      @id @default(autoincrement())
+  notificationId  Int
+  title           String   @db.VarChar(300)
+  fileUrl         String   @db.VarChar(500)
+  position        Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+  notification Notification @relation(fields: [notificationId],references: [id], onDelete: Cascade)
+}
