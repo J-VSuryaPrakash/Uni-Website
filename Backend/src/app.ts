@@ -18,6 +18,9 @@ import notificationRoutes from "./modules/notification/notification.route";
 import notificationAttachmentRoutes from "./modules/notificationAttachments/notifyAttachment.route";
 import publicNotificationAttachmentRoutes from "./modules/notificationAttachments/notifyAttachment.route";
 import eventCategory from "./modules/eventCategory/eventCategory.route";
+import publicEventCategory from "./modules/eventCategory/eventCategory.route";
+import eventRoutes from "./modules/event/event.route";
+import publicEventRoutes from "./modules/event/event.route";
 
 const app = express();
 
@@ -43,6 +46,8 @@ app.use("/api/v1/admin/notifications", notificationRoutes);
 app.use("/api/v1/admin/notification-attachments", notificationAttachmentRoutes);
 app.use("/api/v1/notification-attachments", publicNotificationAttachmentRoutes);
 app.use("/api/v1/admin/event-categories", eventCategory);
-app.use("/api/v1/event-categories", eventCategory);
+app.use("/api/v1/event-categories", publicEventCategory);
+app.use("/api/v1/admin/events", eventRoutes);
+app.use("/api/v1/events", publicEventRoutes);
 
 export default app;
