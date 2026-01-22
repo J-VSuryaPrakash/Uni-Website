@@ -22,6 +22,7 @@ import publicEventCategory from "./modules/eventCategory/eventCategory.route";
 import eventRoutes from "./modules/event/event.route";
 import publicEventRoutes from "./modules/event/event.route";
 import mediaRoutes from "./modules/media/media.route";
+import eventMediaRoutes from "./modules/eventMedia/eventMedia.route";
 
 const app = express();
 
@@ -51,5 +52,6 @@ app.use("/api/v1/event-categories", publicEventCategory);
 app.use("/api/v1/admin/events", eventRoutes);
 app.use("/api/v1/events", publicEventRoutes);
 app.use("/api/v1/admin/media", mediaRoutes);
+app.use("/api/v1/admin/event-media", eventMediaRoutes);
 
 export default app;
