@@ -17,6 +17,7 @@ import pageDirectorateRoutes from "./modules/pageDirectorates/pageDirectorates.r
 import notificationRoutes from "./modules/notification/notification.route";
 import notificationAttachmentRoutes from "./modules/notificationAttachments/notifyAttachment.route";
 import publicNotificationAttachmentRoutes from "./modules/notificationAttachments/notifyAttachment.route";
+import eventCategory from "./modules/eventCategory/eventCategory.route";
 
 const app = express();
 
@@ -41,5 +42,7 @@ app.use("/api/v1/admin/page-directorates", pageDirectorateRoutes);
 app.use("/api/v1/admin/notifications", notificationRoutes);
 app.use("/api/v1/admin/notification-attachments", notificationAttachmentRoutes);
 app.use("/api/v1/notification-attachments", publicNotificationAttachmentRoutes);
+app.use("/api/v1/admin/event-categories", eventCategory);
+app.use("/api/v1/event-categories", eventCategory);
 
 export default app;
