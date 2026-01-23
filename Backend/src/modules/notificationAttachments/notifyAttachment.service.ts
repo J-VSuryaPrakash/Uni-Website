@@ -10,7 +10,7 @@ export class NotifyAttachmentService {
             data: {
                 notificationId: data.notificationId,
                 title: data.title,
-                fileUrl: data.fileUrl,
+                mediaId: data.mediaId,
                 position: data.position
             }
         });
@@ -36,7 +36,6 @@ export class NotifyAttachmentService {
             },
             data: {
                 title: data.title ?? notifyAttachment.title,
-                fileUrl: data.fileUrl ?? notifyAttachment.fileUrl,
                 position: data.position ?? notifyAttachment.position
             }
         });

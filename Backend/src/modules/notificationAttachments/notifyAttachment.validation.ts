@@ -3,7 +3,7 @@ import { z } from 'zod';
 const notifyAttachmentSchema = z.object({
     notificationId: z.number().int().positive(),
     title: z.string().min(1).max(255),
-    fileUrl: z.string(),
+    mediaId: z.number().int().positive(),
     position: z.number().int().nonnegative().default(0)
 });
 
