@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./components/common/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
@@ -9,7 +10,14 @@ const App = () => {
 			<Routes>
 				<Route path="/login" element={<Login />} />
 
-				<Route path="/" element={<Dashboard />}>
+				<Route
+					path="/"
+					element={
+						<ProtectedRoute>
+							<Dashboard />
+						</ProtectedRoute>
+					}
+				>
 					<Route path="menu" element={<Menu />} />
 				</Route>
 
