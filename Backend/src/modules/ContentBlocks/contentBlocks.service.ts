@@ -1,3 +1,4 @@
+import { Prisma } from "../../../generated/prisma/client";
 import prisma from "../../DB/prisma";
 import { ApiError } from "../../utils/apiError";
 import type { createContentBlockDTO,UpdatecontentBlockDTO } from "./contentBlocks.validation";
@@ -45,7 +46,12 @@ export class ContentBlocksService {
 
 		const updatedBlock = await prisma.contentBlock.update({
 			where: { id: blockID },
-			data,
+			data: {
+				blockType: (data.blockType !== undefined) ? data.blockType : contentBlock.blockType,
+				content: (data.content !== undefined) ? data.content : Prisma.JsonNull,
+				position: (data.position !== undefined) ? data.position : contentBlock.position,
+				isVisible: (data.isVisible !== undefined) ? data.isVisible : contentBlock.isVisible,
+			}
 		});
 
 		return updatedBlock;
