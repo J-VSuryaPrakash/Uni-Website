@@ -1,13 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import prisma from "../DB/prisma";
+import prisma from "../../DB/prisma";
 import type {
 	JWTPayload,
 	LoginDTO,
 	RegisterDTO,
-} from "../types/models/auth.types";
-import { ApiError } from "../utils/apiError";
-// import { env } from "../config/env.config";
+} from "./admin.validation"
+import { ApiError } from "../../utils/apiError";
 
 class AuthService {
 	// Generate Access Token

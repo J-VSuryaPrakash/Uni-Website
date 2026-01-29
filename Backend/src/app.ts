@@ -5,7 +5,7 @@ import helmet from "helmet";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import menuRoutes from "./modules/menu/menu.route";
 import publicMenuRoutes from "./modules/menu/menu.route";
-import adminRoutes from "./routes/admin.routes";
+import adminRoutes from "./modules/admin/admin.routes";
 import pageRoutes from "./modules/pages/page.route";
 import publicPageRoutes from "./modules/pages/page.route";
 import designationRoutes from "./modules/designation/designation.route";

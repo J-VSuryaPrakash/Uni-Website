@@ -1,8 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/apiError";
-import { ApiResponse } from "../utils/apiResponse";
-import type { LoginDTO, RegisterDTO } from "../types/models/auth.types";
-import { authService } from "../services/auth.service";
+import { asyncHandler } from "../../utils/asyncHandler";
+import { ApiError } from "../../utils/apiError";
+import { ApiResponse } from "../../utils/apiResponse";
+import type { LoginDTO, RegisterDTO } from "./admin.validation";
+import { authService } from "./admin.service";
 
 const registerAdmin = asyncHandler(async(req, res) => {
 
