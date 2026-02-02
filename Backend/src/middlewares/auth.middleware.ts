@@ -14,14 +14,8 @@ export const authMiddleware = (
     next: NextFunction
 ) => {
 
-    const mode = process.env.NODE_ENV || "production";
-    if (mode === "development") {
-        // In development mode, bypass authentication
-        req.admin = { id: 1 }; // assuming admin with ID 1
-        return next();
-    }
+    const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
 
-    const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
         throw new ApiError(401, "user is not authenticated");
     }
@@ -29,7 +23,9 @@ export const authMiddleware = (
     try {
         const secret = process.env.ACCESS_TOKEN_SECRET!;
         const decoded = jwt.verify(token, secret) as { id: number };
+
         req.admin = { id: decoded.id };
+        
         next();
     }catch (error) {
         throw new ApiError(401, "Invalid authentication token");

@@ -11,8 +11,10 @@ import { ApiError } from "../../utils/apiError";
 class AuthService {
 	// Generate Access Token
 	private generateAccessToken(payload: JWTPayload): string {
-		const secret =
-			process.env.ACCESS_TOKEN_SECRET || "jntuk-secret-access-token";
+		const secret = process.env.ACCESS_TOKEN_SECRET;
+		
+		if (!secret) throw new Error("ACCESS_TOKEN_SECRET missing");
+		
 		return jwt.sign(payload, secret, {
 			expiresIn: "1d",
 		});
@@ -20,8 +22,8 @@ class AuthService {
 
 	// Generate Refresh Token
 	private generateRefreshToken(payload: JWTPayload): string {
-		const secret =
-			process.env.REFRESH_TOKEN_SECRET || "jntuk-secret-refresh-token";
+		const secret = process.env.REFRESH_TOKEN_SECRET;
+		if (!secret) throw new Error("REFRESH_TOKEN_SECRET missing");
 		return jwt.sign(payload, secret, {
 			expiresIn: "10d",
 		});
@@ -101,6 +103,19 @@ class AuthService {
 			name: admin.name,
 			email: admin.email,
 		};
+	}
+
+	public async getAdminById(adminId: number) {
+		const admin = await prisma.admin.findUnique({
+			where: { id: adminId },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+			},
+		});
+		
+		return admin;
 	}
 }
 
