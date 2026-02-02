@@ -60,7 +60,13 @@ const app = express();
 // ============================
 // Middleware Configuration
 // ============================
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+// app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(
+	cors({
+		origin: "http://localhost:5173", // Your frontend URL
+		credentials: true, // Allow cookies/headers
+	}),
+);
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies from request headers
 app.use(helmet()); // Security headers middleware

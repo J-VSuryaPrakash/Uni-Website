@@ -8,16 +8,19 @@ export const useAuth = () => {
     const {
 		data: user,
 		isLoading,
+		isFetching,
 	} = useQuery({
 		queryKey: ["auth"],
 		queryFn: getMe,
-		retry: false, // important
-    });
+		retry: false,
+		staleTime: 1000 * 60 * 2,
+	});
     
     
     const loginMutation = useMutation({
         mutationFn: (data: loginPayload) => login(data),
-        onSuccess: () => {
+        onSuccess: (userData) => {
+            queryClient.setQueryData(["auth"], userData);
             queryClient.invalidateQueries({ queryKey: ["auth"] });
         },
     });
@@ -39,7 +42,7 @@ export const useAuth = () => {
     return {
 		user,
 		isAuthenticated: !!user,
-		isLoading,
+		isLoading: isLoading || isFetching,
 		login: loginMutation,
 		logout: logoutMutation,
 		register: registerMutation,
