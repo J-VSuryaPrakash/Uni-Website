@@ -3,7 +3,7 @@ import slugify from "slugify";
 
 const MenuBase = z.object({
 	name: z.string().min(2).max(100).trim(),
-	slug: z.string().min(2).max(100).trim().optional(),
+	slug: z.string().max(100).trim().optional(),
 	position: z.number().int().nonnegative(),
 	isActive: z.boolean().default(true),
 });
