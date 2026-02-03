@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/common/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
+import Pages from "./pages/Pages";
 
 const App = () => {
 	return (
@@ -19,6 +20,7 @@ const App = () => {
 					}
 				>
 					<Route path="menu" element={<Menu />} />
+					<Route path="pages" element={<Pages />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/login" replace />} />
