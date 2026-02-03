@@ -21,10 +21,10 @@ router.get("/tree/", getMenuTree);
 
 /* ---------- ADMIN ---------- */
 router.post("/", authMiddleware, createMenu);
+router.patch("/reorder", authMiddleware, reorderMenus);
 router.patch("/:id", authMiddleware, updateMenu);
 router.delete("/:id", authMiddleware, deleteMenu);
 router.get("/", authMiddleware, getAllMenus);
 router.get("/:id", authMiddleware, getMenuById);
-router.patch("/reorder", authMiddleware, reorderMenus);
 
 export default router;

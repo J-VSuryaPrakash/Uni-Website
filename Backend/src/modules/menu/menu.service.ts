@@ -72,9 +72,9 @@ export default class MenuService {
 		return Menu;
 	}
 
-	async reorderMenus(order: { id: number; position: number }[]) {
+	async reorderMenus(menu: { id: number; position: number }[]) {
 		return prisma.$transaction(
-			order.map((item) =>
+			menu.map((item) =>
 				prisma.menu.update({
 					where: { id: item.id },
 					data: { position: item.position },

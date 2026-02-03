@@ -26,7 +26,7 @@ export const useMenus = () => {
 
 	const reorder = useMutation({
 		mutationFn: menuApi.reorderMenus,
-		onMutate: async (newOrder) => {
+		onMutate: async (newOrder: { id: number; position: number }[]) => {
 			// Cancel any outgoing refetches
 			await qc.cancelQueries({ queryKey: ["menus"] });
 
@@ -35,12 +35,25 @@ export const useMenus = () => {
 
 			// Optimistically update to the new value
 			if (previousMenus) {
-				qc.setQueryData(["menus"], newOrder);
+				// Create a map of new positions
+				const positionMap = new Map(
+					newOrder.map((item) => [item.id, item.position]),
+				);
+
+				// Update the menus with new positions
+				const updatedMenus = previousMenus
+					.map((menu) => ({
+						...menu,
+						position: positionMap.get(menu.id) ?? menu.position,
+					}))
+					.sort((a, b) => a.position - b.position);
+
+				qc.setQueryData(["menus"], updatedMenus);
 			}
 
 			return { previousMenus };
 		},
-		onError: (err, newOrder, context: any) => {
+		onError: (context: any) => {
 			// Rollback on error
 			if (context?.previousMenus) {
 				qc.setQueryData(["menus"], context.previousMenus);

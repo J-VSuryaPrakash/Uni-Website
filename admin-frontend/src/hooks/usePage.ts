@@ -32,7 +32,7 @@ export const usePages = () => {
 		reorder: useMutation({
             mutationFn: pageApi.reorderPages,
           
-            // 🔥 OPTIMISTIC UPDATE
+            //OPTIMISTIC UPDATE
             onMutate: async (newOrder) => {
               await qc.cancelQueries({ queryKey: ["pages"] });
           

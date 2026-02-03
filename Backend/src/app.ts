@@ -18,7 +18,7 @@ import {
 } from "./modules/menu/menu.route";
 
 // Page Management Routes (Admin & Public)
-import contentBlockRoutes from "./modules/contentBlocks/contentBlocks.route";
+import contentBlockRoutes from "./modules/ContentBlocks/contentBlocks.route";
 import {
 	default as pageRoutes,
 	default as publicPageRoutes,

@@ -1,4 +1,12 @@
-import { closestCenter, DndContext } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
+import {
+	closestCenter,
+	DndContext,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
 import {
 	arrayMove,
 	SortableContext,
@@ -6,31 +14,35 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Edit2, GripVertical, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { GripVertical, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import DeleteConfirmButton from "@/components/Menu/DeleteConfirmButton";
+import MenuAddUpdateDialog from "@/components/Menu/MenuAddUpdateDialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { useMenus } from "../hooks/useMenus";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import MenuForm from "../components/forms/MenuForm";
-
-interface MenuItemProps {
-	menu: any;
-	editingMenuId: number | null;
-	onEdit: (id: number) => void;
-	onDelete: (id: number) => void;
-	onUpdate: (data: any) => void;
-	onCancel: () => void;
+// --- Types ---
+interface MenuData {
+	id: number;
+	name: string;
+	slug: string;
+	position: number;
+	isActive: boolean;
 }
 
-function MenuItemCard({
-	menu,
-	editingMenuId,
-	onEdit,
-	onDelete,
-	onUpdate,
-	onCancel,
-}: MenuItemProps) {
+// --- Sortable Row Component ---
+interface SortableRowProps {
+	menu: MenuData;
+	onEdit: (menu: MenuData) => void;
+	onDelete: (id: number) => void;
+}
+
+function SortableRow({ menu, onEdit, onDelete }: SortableRowProps) {
 	const {
 		attributes,
 		listeners,
@@ -43,69 +55,90 @@ function MenuItemCard({
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
-		opacity: isDragging ? 0.5 : 1,
+		zIndex: isDragging ? 50 : "auto",
+		position: "relative" as const,
 	};
 
 	return (
-		<div ref={setNodeRef} style={style}>
-			<Card className="p-4 flex justify-between items-center bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 hover:shadow-md hover:border-slate-300 transition-all duration-200 ease-out cursor-grab active:cursor-grabbing group">
-				<div className="flex items-center gap-3 flex-1 min-w-0">
-					<button
-						{...attributes}
-						{...listeners}
-						className="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-200 rounded-md transition-all duration-150 flex-shrink-0 transform group-hover:scale-110"
-						title="Drag to reorder"
-					>
-						<GripVertical size={20} />
-					</button>
-					<span className="text-slate-800 font-medium truncate">
-						{menu.name}
-					</span>
-				</div>
-
-				<div className="flex gap-2 flex-shrink-0">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => onEdit(menu.id)}
-						className="gap-2 bg-white hover:bg-blue-50 border-slate-300 text-slate-700 hover:text-blue-600 transform hover:scale-105 transition-all duration-150 active:scale-95"
-					>
-						<Edit2 size={16} />
-						<span className="hidden sm:inline">Update</span>
-					</Button>
-
-					<Button
-						variant="destructive"
-						size="sm"
-						onClick={() => onDelete(menu.id)}
-						className="gap-2 transform hover:scale-105 transition-all duration-150 active:scale-95"
-					>
-						<Trash2 size={16} />
-						<span className="hidden sm:inline">Delete</span>
-					</Button>
-				</div>
-			</Card>
-
-			{editingMenuId === menu.id && (
-				<div className="mt-3 p-5 border border-slate-200 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
-					<h3 className="text-sm font-semibold text-slate-700 mb-4">
-						Edit Menu
-					</h3>
-					<MenuForm initial={menu} onSubmit={onUpdate} />
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={onCancel}
-						className="mt-3 bg-white hover:bg-slate-100 border-slate-300"
-					>
-						Cancel
-					</Button>
-				</div>
+		<div
+			ref={setNodeRef}
+			style={style}
+			className={cn(
+				"grid grid-cols-12 gap-4 items-center p-4 bg-white border-b border-slate-100 hover:bg-slate-50 transition-colors group",
+				isDragging &&
+					"shadow-lg ring-1 ring-slate-200 rotate-1 bg-slate-50 opacity-90 rounded-md",
 			)}
+		>
+			{/* Drag Handle */}
+			<div className="col-span-1 flex justify-center">
+				<button
+					{...attributes}
+					{...listeners}
+					className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200 cursor-grab active:cursor-grabbing transition-colors"
+				>
+					<GripVertical size={18} />
+				</button>
+			</div>
+
+			{/* ID */}
+			<div className="col-span-1 text-slate-500 text-sm font-mono">
+				#{menu.id}
+			</div>
+
+			{/* Name */}
+			<div className="col-span-3 font-medium text-slate-800 truncate">
+				{menu.name}
+			</div>
+
+			{/* Slug */}
+			<div className="col-span-3 text-slate-500 text-sm truncate bg-slate-100 px-2 py-1 rounded-md w-fit max-w-full">
+				/{menu.slug}
+			</div>
+
+			{/* Position */}
+			<div className="col-span-1 text-slate-500 text-sm text-center">
+				{menu.position}
+			</div>
+
+			{/* Status */}
+			<div className="col-span-1 flex justify-center">
+				<Badge
+					variant={menu.isActive ? "default" : "secondary"}
+					className={cn(
+						"font-normal",
+						menu.isActive
+							? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-transparent shadow-none"
+							: "bg-slate-100 text-slate-500 hover:bg-slate-200 shadow-none",
+					)}
+				>
+					{menu.isActive ? "Active" : "Inactive"}
+				</Badge>
+			</div>
+
+			{/* Actions */}
+			<div className="col-span-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => onEdit(menu)}
+					className="h-8 w-8 text-slate-500 hover:text-blue-600 hover:bg-blue-50"
+				>
+					<Pencil size={16} />
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => onDelete(menu.id)}
+					className="h-8 w-8 text-slate-500 hover:text-red-600 hover:bg-red-50"
+				>
+					<Trash2 size={16} />
+				</Button>
+			</div>
 		</div>
 	);
 }
 
+// --- Main Page Component ---
 export default function Menus() {
 	const {
 		data: menus,
@@ -115,113 +148,175 @@ export default function Menus() {
 		update,
 		reorder,
 	} = useMenus();
-	const [showForm, setShowForm] = useState(false);
-	const [editingMenuId, setEditingMenuId] = useState<number | null>(null);
 
-	if (isLoading)
+	// State
+	const [searchQuery, setSearchQuery] = useState("");
+	const [isAddOpen, setIsAddOpen] = useState(false);
+	const [editingMenu, setEditingMenu] = useState<MenuData | null>(null);
+	const [deleteMenuId, setDeleteMenuId] = useState<number | null>(null);
+
+	// Dnd Sensors
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor),
+	);
+
+	// Filtered Data
+	const filteredMenus = useMemo(() => {
+		if (!menus) return [];
+		return menus.filter(
+			(menu) =>
+				menu.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				menu.slug.toLowerCase().includes(searchQuery.toLowerCase()),
+		);
+	}, [menus, searchQuery]);
+
+	// Handlers
+	const handleDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event;
+		if (!over || active.id === over.id || !menus) return;
+
+		const oldIndex = menus.findIndex((m) => m.id === active.id);
+		const newIndex = menus.findIndex((m) => m.id === over.id);
+
+		// Create the reordered array
+		const reorderedMenus = arrayMove(menus, oldIndex, newIndex);
+
+		// Map to the format expected by the API: array of {id, position}
+		const reorderPayload = reorderedMenus.map((menu, index) => ({
+			id: menu.id,
+			position: index,
+		}));
+
+		// Send the reorder request
+		reorder.mutate(reorderPayload, {
+			onSuccess: () => {
+				toast.success("Menus reordered successfully");
+			},
+			onError: (error: any) => {
+				toast.error(error?.message || "Failed to reorder menus");
+			},
+		});
+	};
+
+	if (isLoading) {
 		return (
-			<div className="flex items-center justify-center h-screen">
-				<div className="text-slate-600 animate-pulse">Loading...</div>
+			<div className="flex h-screen items-center justify-center bg-slate-50">
+				<div className="text-slate-400 animate-pulse font-medium">
+					Loading Menus...
+				</div>
 			</div>
 		);
-
-	const handleDragEnd = (event: any) => {
-		const { active, over } = event;
-
-		if (!over || active.id === over.id) return;
-
-		const oldIndex = menus!.findIndex((m) => m.id === active.id);
-		const newIndex = menus!.findIndex((m) => m.id === over.id);
-
-		const updated = arrayMove(menus!, oldIndex, newIndex);
-
-		reorder.mutate(updated.map((m, i) => ({ id: m.id, position: i })));
-	};
-
-	const handleUpdate = (data: any) => {
-		update.mutate({
-			id: editingMenuId,
-			data,
-		});
-		setEditingMenuId(null);
-	};
+	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100 p-4 sm:p-6 lg:p-8">
-			<div className="max-w-4xl mx-auto space-y-6">
-				<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+		<div className="min-h-screen bg-slate-50/50 p-8 font-sans">
+			<div className="mx-auto max-w-6xl space-y-8">
+				{/* Top Header Section */}
+				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<h1 className="text-3xl font-bold text-slate-900">
+						<h1 className="text-2xl font-bold tracking-tight text-slate-900">
 							Menus
 						</h1>
-						<p className="text-sm text-slate-500 mt-1">
-							Manage and organize your menus
+						<p className="text-sm text-slate-500">
+							Manage your application's navigation structure.
 						</p>
 					</div>
-					<Button
-						onClick={() => setShowForm(true)}
-						className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-150 active:scale-95 shadow-md hover:shadow-lg"
-					>
-						+ Add Menu
-					</Button>
-				</div>
 
-				{showForm && (
-					<div className="p-6 border border-slate-200 rounded-lg bg-white shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
-						<h3 className="text-lg font-semibold text-slate-900 mb-4">
-							Create New Menu
-						</h3>
-						<MenuForm
-							onSubmit={(data) => {
-								create.mutate({
-									...data,
-									position: menus?.length ?? 0,
-								});
-								setShowForm(false);
-							}}
-						/>
+					<div className="flex items-center gap-3">
+						{/* Search Bar */}
+						<div className="relative">
+							<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+							<Input
+								placeholder="Search menus..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								className="w-full sm:w-64 pl-9 bg-white border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20"
+							/>
+						</div>
+
+						{/* Add Button */}
 						<Button
-							variant="outline"
-							onClick={() => setShowForm(false)}
-							className="mt-3"
+							onClick={() => setIsAddOpen(true)}
+							className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow transition-all"
 						>
-							Cancel
+							<Plus className="mr-2 h-4 w-4" /> Add Menu
 						</Button>
 					</div>
-				)}
+				</div>
 
-				{menus && menus.length > 0 ? (
+				{/* Content Section */}
+				<div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+					{/* Table Header */}
+					<div className="grid grid-cols-12 gap-4 border-b border-slate-200 bg-slate-50/50 p-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+						<div className="col-span-1 text-center">Order</div>
+						<div className="col-span-1">ID</div>
+						<div className="col-span-3">Name</div>
+						<div className="col-span-3">Slug</div>
+						<div className="col-span-1 text-center">Pos</div>
+						<div className="col-span-1 text-center">Status</div>
+						<div className="col-span-2 text-right">Actions</div>
+					</div>
+
+					{/* Sortable List */}
 					<DndContext
+						sensors={sensors}
 						collisionDetection={closestCenter}
 						onDragEnd={handleDragEnd}
 					>
 						<SortableContext
-							items={menus.map((m) => m.id)}
+							items={filteredMenus.map((m) => m.id)}
 							strategy={verticalListSortingStrategy}
 						>
-							<div className="space-y-3">
-								{menus.map((menu) => (
-									<MenuItemCard
-										key={menu.id}
-										menu={menu}
-										editingMenuId={editingMenuId}
-										onEdit={setEditingMenuId}
-										onDelete={(id) => remove.mutate(id)}
-										onUpdate={handleUpdate}
-										onCancel={() => setEditingMenuId(null)}
-									/>
-								))}
+							<div className="divide-y divide-slate-100">
+								{filteredMenus.length > 0 ? (
+									filteredMenus.map((menu) => (
+										<SortableRow
+											key={menu.id}
+											menu={menu}
+											onEdit={setEditingMenu}
+											onDelete={setDeleteMenuId}
+										/>
+									))
+								) : (
+									<div className="p-12 text-center text-slate-500">
+										No menus found.
+									</div>
+								)}
 							</div>
 						</SortableContext>
 					</DndContext>
-				) : (
-					<div className="text-center py-12 bg-white rounded-lg border border-slate-200">
-						<p className="text-slate-500">
-							No menus yet. Create your first menu!
-						</p>
-					</div>
-				)}
+				</div>
 			</div>
+
+			{/* --- Add/Update Dialog Component --- */}
+			<MenuAddUpdateDialog
+				isOpen={isAddOpen || !!editingMenu}
+				onOpenChange={(open) => {
+					if (!open) {
+						setIsAddOpen(false);
+						setEditingMenu(null);
+					}
+				}}
+				editingMenu={editingMenu}
+				filteredMenus={filteredMenus}
+				create={create}
+				update={update}
+				onSuccess={() => {
+					// Success callbacks are handled in the component
+				}}
+			/>
+
+			{/* --- Delete Confirmation Component --- */}
+			<DeleteConfirmButton
+				isOpen={deleteMenuId !== null}
+				onOpenChange={(open) => !open && setDeleteMenuId(null)}
+				deleteMenuId={deleteMenuId}
+				remove={remove}
+				onSuccess={() => {
+					// Success callback is handled in the component
+				}}
+			/>
 		</div>
 	);
 }

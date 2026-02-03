@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/common/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -27,6 +28,15 @@ const App = () => {
 
 				<Route path="*" element={<Navigate to="/login" replace />} />
 			</Routes>
+
+			{/* Toast notifications */}
+			<Toaster
+				position="top-right"
+				// richColors
+				// closeButton
+				expand={false}
+				duration={3000}
+			/>
 		</BrowserRouter>
 	);
 };
