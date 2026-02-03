@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
 import Pages from "./pages/Pages";
+import PageEditor from "./pages/PageEditor";
 
 const App = () => {
 	return (
@@ -21,6 +22,7 @@ const App = () => {
 				>
 					<Route path="menu" element={<Menu />} />
 					<Route path="pages" element={<Pages />} />
+					<Route path="pages/:id/editor" element={<PageEditor />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/login" replace />} />

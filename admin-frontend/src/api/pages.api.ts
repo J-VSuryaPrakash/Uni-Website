@@ -8,7 +8,7 @@ export const getPages = async () => {
 };
 
 export const createPage = async (payload: CreatePageDTO) => {
-	const res = await api.post<ApiResponse<Page>>("/admin/pages", payload);
+	const res = await api.post<ApiResponse<Page>>("/admin/pages/", payload);
 	return res.data.data;
 };
 

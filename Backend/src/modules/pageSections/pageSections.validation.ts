@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createPageSectionSchema = z.object({
-    title: z.string().min(2).max(200).trim(),
+    title: z.string().min(2).max(200).trim().optional(),
     position: z.number().int().nonnegative(),
 });
 
