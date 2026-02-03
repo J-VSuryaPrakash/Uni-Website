@@ -6,6 +6,7 @@ export interface Menu extends BaseEntity {
 	slug: string;
 	position: number;
 	isActive: boolean;
+    updatedAt: Date;
 	pages?: Page[]; // only present in tree API
 }
 

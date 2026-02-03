@@ -21,7 +21,7 @@ router.get("/tree/", getMenuTree);
 
 /* ---------- ADMIN ---------- */
 router.post("/", authMiddleware, createMenu);
-router.put("/:id", authMiddleware, updateMenu);
+router.patch("/:id", authMiddleware, updateMenu);
 router.delete("/:id", authMiddleware, deleteMenu);
 router.get("/", authMiddleware, getAllMenus);
 router.get("/:id", authMiddleware, getMenuById);
