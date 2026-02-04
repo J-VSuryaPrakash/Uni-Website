@@ -20,11 +20,11 @@ router.get("/slug/:slug", getPageBySlug);
 // Admin routes
 router.post("/", authMiddleware, createPage);
 router.get("/", authMiddleware, getAllpages);
+router.patch("/reorder", authMiddleware, reorderPages);
 router.get("/:id", authMiddleware, getPageById);
-router.put("/:id", authMiddleware, updatePage);
+router.patch("/:id", authMiddleware, updatePage);
 router.delete("/:id", authMiddleware, deletePage);
 router.patch("/:id/move", authMiddleware, movePage);
-router.patch("/reorder", authMiddleware, reorderPages);
 
 
 export default router;

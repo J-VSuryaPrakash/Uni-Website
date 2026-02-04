@@ -29,35 +29,45 @@ export const usePages = () => {
 			mutationFn: ({ id, data }: any) => pageApi.movePage(id, data),
 			onSuccess: invalidate,
 		}),
-		reorder: useMutation({
-            mutationFn: pageApi.reorderPages,
-          
-            //OPTIMISTIC UPDATE
-            onMutate: async (newOrder) => {
-              await qc.cancelQueries({ queryKey: ["pages"] });
-          
-              const previous = qc.getQueryData<any[]>(["pages"]);
-          
-              qc.setQueryData(["pages"], (old: any[] = []) => {
-                const map = new Map(newOrder.map((p: any) => [p.id, p.position]));
-          
-                return old.map((p) =>
-                  map.has(p.id)
-                    ? { ...p, position: map.get(p.id) }
-                    : p
-                );
-              });
-          
-              return { previous };
-            },
-          
-            onError: (_err, _data, context) => {
-              qc.setQueryData(["pages"], context?.previous);
-            },
-          
-            onSettled: () => {
-              qc.invalidateQueries({ queryKey: ["pages"] });
-            },
-          })
+		 reorder: useMutation({
+				mutationFn: pageApi.reorderPages,
+				onMutate: async (newOrder: { id: number; position: number }[]) => {
+					// Cancel any outgoing refetches
+					await qc.cancelQueries({ queryKey: ["pages"] });
+		
+					// Get the previous data
+					const previousPages = qc.getQueryData<any[]>(["pages"]);
+		
+					// Optimistically update to the new value
+					if (previousPages) {
+						// Create a map of new positions
+						const positionMap = new Map(
+							newOrder.map((item) => [item.id, item.position]),
+						);
+		
+						// Update the menus with new positions
+						const updatedPages = previousPages
+							.map((page) => ({
+								...page,
+								position: positionMap.get(page.id) ?? page.position,
+							}))
+							.sort((a, b) => a.position - b.position);
+		
+						qc.setQueryData(["pages"], updatedPages);
+					}
+		
+					return { previousPages };
+				},
+				onError: (context: any) => {
+					// Rollback on error
+					if (context?.previousPages) {
+						qc.setQueryData(["pages"], context.previousPages);
+					}
+				},
+				onSuccess: () => {
+					// Refetch to ensure sync with server
+					qc.invalidateQueries({ queryKey: ["pages"] });
+				},
+			})
 	};
 };

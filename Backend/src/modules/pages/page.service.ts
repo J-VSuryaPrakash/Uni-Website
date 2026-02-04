@@ -15,7 +15,7 @@ export default class PageService {
 		if (existingPage) {
 			throw new ApiError(
 				400,
-				"Page with this slug is already exists in the database"
+				"Page with this slug is already exists in the database",
 			);
 		}
 
@@ -143,15 +143,15 @@ export default class PageService {
 						where: { id: item.id },
 						data: { position: item.position },
 						select: { id: true, position: true },
-					})
-				)
+					}),
+				),
 			);
 
 			return updates;
 		} catch (error) {
 			throw new ApiError(
 				500,
-				"Failed to reorder pages. One or more IDs may be invalid."
+				"Failed to reorder pages. One or more IDs may be invalid.",
 			);
 		}
 	}
@@ -194,6 +194,43 @@ export default class PageService {
 			throw new ApiError(404, "Page not found");
 		}
 
-		return page;
+		const breadcrumbs = await this.buildBreadcrumbs(page.id);
+
+		return { ...page, breadcrumbs};
+	}
+
+	private async buildBreadcrumbs(pageId: number) {
+		const breadcrumbs = [];
+
+		let current = await prisma.page.findUnique({
+			where: { id: pageId },
+			select: {
+				id: true,
+				title: true,
+				slug: true,
+				parentId: true,
+			},
+		});
+
+		while (current) {
+			breadcrumbs.unshift({
+				title: current.title,
+				slug: current.slug,
+			});
+
+			if (!current.parentId) break;
+
+			current = await prisma.page.findUnique({
+				where: { id: current.parentId },
+				select: {
+					id: true,
+					title: true,
+					slug: true,
+					parentId: true,
+				},
+			});
+		}
+
+		return breadcrumbs;
 	}
 }

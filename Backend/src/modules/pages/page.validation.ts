@@ -14,7 +14,7 @@ const SeoMetaSchema = z
 
 const PageBase = z.object({
 	title: z.string().min(2).max(200).trim(),
-	slug: z.string().min(2).max(200).trim().optional(),
+	slug: z.string().max(200).trim().optional(),
 	menuId: z.number().int().positive().optional().nullable(),
 	parentId: z.number().int().positive().optional().nullable(),
 	position: z.number().int().nonnegative().default(0),
