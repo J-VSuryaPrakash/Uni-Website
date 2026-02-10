@@ -1,51 +1,52 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { FileText, GripVertical, Pencil, Trash2 } from "lucide-react";
+import type { Status } from "@/types/Common.types";
+import {
+	ChevronDown,
+	ChevronRight,
+	FileText,
+	Pencil,
+	Trash2,
+} from "lucide-react";
 import { Button } from "../ui/button";
 
-interface SeoMeta {
+export interface SeoMeta {
 	title: string;
 	keywords: string[];
 	description: string;
 }
 
-interface PageData {
+export interface PageRowData {
 	id: number;
-	menuId: number;
-	parentId: number | null;
+	menuId?: number | null;
+	parentId?: number | null;
 	title: string;
 	slug: string;
 	position: number;
-	status: string; // e.g., "published", "draft", "archived"
-	seoMeta: SeoMeta;
+	status: Status;
+	seoMeta?: SeoMeta | null;
 }
 
-// --- Sortable Row Component ---
-interface SortableRowProps {
-	page: PageData;
-	onEdit: (page: PageData) => void;
+// --- Page Row Component ---
+interface PageRowProps {
+	page: PageRowData;
+	onEdit: (page: PageRowData) => void;
 	onDelete: (id: number) => void;
+	level?: number;
+	hasChildren?: boolean;
+	isExpanded?: boolean;
+	onToggle?: () => void;
 }
 
-function SortableRow({ page, onEdit, onDelete }: SortableRowProps) {
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({ id: page.id });
-
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-		zIndex: isDragging ? 50 : "auto",
-		position: "relative" as const,
-	};
-
+function PageRow({
+	page,
+	onEdit,
+	onDelete,
+	level = 0,
+	hasChildren = false,
+	isExpanded = false,
+	onToggle,
+}: PageRowProps) {
 	// Enhanced status badge with support for archived status
 	const getStatusClassName = (status: string) => {
 		switch (status.toLowerCase()) {
@@ -62,53 +63,60 @@ function SortableRow({ page, onEdit, onDelete }: SortableRowProps) {
 
 	return (
 		<div
-			ref={setNodeRef}
-			style={style}
 			className={cn(
-				"grid grid-cols-13 gap-4 items-center p-4 bg-white border-b border-slate-100 hover:bg-slate-50 transition-colors group",
-				isDragging &&
-					"shadow-lg ring-1 ring-slate-200 rotate-1 bg-slate-50 opacity-90 rounded-md",
+				"grid grid-cols-12 gap-4 items-center p-4 bg-white hover:bg-slate-50 transition-colors group border-b border-slate-100",
+				level > 0 && "bg-slate-50/40",
 			)}
 		>
-			{/* Drag Handle */}
-			<div className="col-span-1 flex justify-center">
-				<button
-					{...attributes}
-					{...listeners}
-					className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-200 cursor-grab active:cursor-grabbing transition-colors"
-				>
-					<GripVertical size={18} />
-				</button>
+			<div
+				className={cn(
+					"col-span-5 flex items-center gap-3",
+					level > 0 && "pl-6",
+				)}
+			>
+				{hasChildren ? (
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={onToggle}
+						className="h-7 w-7 text-slate-500 hover:text-slate-800"
+						title={isExpanded ? "Collapse" : "Expand"}
+					>
+						{isExpanded ? (
+							<ChevronDown size={16} />
+						) : (
+							<ChevronRight size={16} />
+						)}
+					</Button>
+				) : (
+					<span className="h-7 w-7" />
+				)}
+				<div className="flex items-center gap-2 min-w-0">
+					<FileText size={14} className="text-slate-400" />
+					<div className="min-w-0">
+						<div className="font-medium text-slate-900 truncate">
+							{page.title}
+						</div>
+						<div className="text-xs text-slate-500 truncate">
+							/{page.slug}
+						</div>
+					</div>
+				</div>
 			</div>
 
-			{/* ID */}
-			<div className="col-span-1 text-slate-500 text-sm font-mono">
+			<div className="col-span-2 text-slate-500 text-sm font-mono">
 				#{page.id}
 			</div>
 
-			{/* Title */}
-			<div className="col-span-3 font-medium text-slate-800 truncate flex items-center gap-2">
-				<FileText size={14} className="text-slate-400" />
-				{page.title}
+			<div className="col-span-2 text-slate-500 text-sm">
+				Menu {page.menuId ?? "-"}
 			</div>
 
-			{/* Slug */}
-			<div className="col-span-2 text-slate-500 text-sm truncate bg-slate-100 px-2 py-1 rounded-md w-fit max-w-full">
-				/{page.slug}
+			<div className="col-span-1 text-slate-500 text-sm">
+				Pos {page.position}
 			</div>
 
-			{/* Parent ID (Optional visual) */}
-			<div className="col-span-1 text-slate-400 text-sm text-center font-mono">
-				{page.parentId ? `P:${page.parentId}` : "-"}
-			</div>
-
-			{/* MENU ID */}
-			<div className="col-span-1 text-slate-400 text-sm text-center font-mono">
-				{page.menuId ? `M:${page.menuId}` : "-"}
-			</div>
-
-			{/* Status */}
-			<div className="col-span-2 flex justify-center">
+			<div className="col-span-1 flex justify-center">
 				<Badge
 					className={cn(
 						"font-normal capitalize",
@@ -119,8 +127,7 @@ function SortableRow({ page, onEdit, onDelete }: SortableRowProps) {
 				</Badge>
 			</div>
 
-			{/* Actions */}
-			<div className="col-span-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+			<div className="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
 				<Button
 					variant="ghost"
 					size="icon"
@@ -144,4 +151,4 @@ function SortableRow({ page, onEdit, onDelete }: SortableRowProps) {
 	);
 }
 
-export default SortableRow;
+export default PageRow;
