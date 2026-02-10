@@ -7,6 +7,19 @@ import type {
 } from "./page.validation";
 
 export default class PageService {
+	private async getParentMenuId(parentId: number) {
+		const parent = await prisma.page.findUnique({
+			where: { id: parentId },
+			select: { menuId: true },
+		});
+
+		if (!parent) {
+			throw new ApiError(404, "Parent page not found");
+		}
+
+		return parent.menuId ?? null;
+	}
+
 	async Createpage(data: CreatePageDTO) {
 		const existingPage = await prisma.page.findFirst({
 			where: { slug: data.slug! },
@@ -19,6 +32,18 @@ export default class PageService {
 			);
 		}
 
+		let resolvedMenuId = data.menuId ?? null;
+		if (data.parentId) {
+			const parentMenuId = await this.getParentMenuId(data.parentId);
+			if (resolvedMenuId !== null && parentMenuId !== resolvedMenuId) {
+				throw new ApiError(
+					400,
+					"Parent and child pages must share the same menu",
+				);
+			}
+			resolvedMenuId = parentMenuId;
+		}
+
 		const page = await prisma.page.create({
 			data: {
 				title: data.title,
@@ -26,7 +51,9 @@ export default class PageService {
 				position: data.position,
 				status: data.status,
 				seoMeta: data.seoMeta ?? {},
-				...(data.menuId && { menu: { connect: { id: data.menuId } } }),
+				...(resolvedMenuId && {
+					menu: { connect: { id: resolvedMenuId } },
+				}),
 				...(data.parentId && {
 					parent: { connect: { id: data.parentId } },
 				}),
@@ -64,6 +91,20 @@ export default class PageService {
 		}
 
 		const { menuId, parentId, ...rest } = data;
+		const nextParentId = parentId !== undefined ? parentId : page.parentId;
+		let resolvedMenuId =
+			menuId !== undefined ? menuId : (page.menuId ?? null);
+
+		if (nextParentId !== null && nextParentId !== undefined) {
+			const parentMenuId = await this.getParentMenuId(nextParentId);
+			if (menuId !== undefined && parentMenuId !== menuId) {
+				throw new ApiError(
+					400,
+					"Parent and child pages must share the same menu",
+				);
+			}
+			resolvedMenuId = parentMenuId;
+		}
 
 		const updateData: Record<string, any> = {};
 
@@ -73,11 +114,14 @@ export default class PageService {
 			}
 		}
 
-		if (menuId !== undefined) {
+		if (
+			menuId !== undefined ||
+			(nextParentId !== null && resolvedMenuId !== page.menuId)
+		) {
 			updateData.menu =
-				menuId === null
+				resolvedMenuId === null
 					? { disconnect: true }
-					: { connect: { id: menuId } };
+					: { connect: { id: resolvedMenuId } };
 		}
 
 		if (parentId !== undefined) {
@@ -118,6 +162,16 @@ export default class PageService {
 
 		if (!page) {
 			throw new ApiError(404, "Page not found");
+		}
+
+		if (data.parentId !== null) {
+			const parentMenuId = await this.getParentMenuId(data.parentId);
+			if (parentMenuId !== data.menuId) {
+				throw new ApiError(
+					400,
+					"Parent and child pages must share the same menu",
+				);
+			}
 		}
 
 		const movedPage = await prisma.page.update({
@@ -196,7 +250,7 @@ export default class PageService {
 
 		const breadcrumbs = await this.buildBreadcrumbs(page.id);
 
-		return { ...page, breadcrumbs};
+		return { ...page, breadcrumbs };
 	}
 
 	private async buildBreadcrumbs(pageId: number) {
