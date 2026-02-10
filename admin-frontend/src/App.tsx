@@ -1,11 +1,13 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
-import ProtectedRoute from "./components/common/ProtectedRoutes";
+import ContentBlocks from "@/pages/ContentBlocks";
 import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import Menu from "./pages/Menu";
-import Pages from "./pages/Pages";
-import PageEditor from "./pages/PageEditor";
+import DashboardHome from "./pages/DashboardHome";
+import Login from "@/pages/Login";
+import Menu from "@/pages/Menu";
+import Pages from "@/pages/Pages";
+import PageSections from "@/pages/PageSections";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./components/common/ProtectedRoutes";
 
 const App = () => {
 	return (
@@ -21,9 +23,11 @@ const App = () => {
 						</ProtectedRoute>
 					}
 				>
+					<Route index element={<DashboardHome />} />
 					<Route path="menu" element={<Menu />} />
 					<Route path="pages" element={<Pages />} />
-					<Route path="pages/:id/editor" element={<PageEditor />} />
+					<Route path="page-sections" element={<PageSections />} />
+					<Route path="content-blocks" element={<ContentBlocks />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/login" replace />} />
