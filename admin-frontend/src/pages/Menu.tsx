@@ -201,7 +201,7 @@ export default function Menus() {
 
 	if (isLoading) {
 		return (
-			<div className="flex h-screen items-center justify-center bg-slate-50">
+			<div className="flex min-h-[60vh] items-center justify-center">
 				<div className="text-slate-400 animate-pulse font-medium">
 					Loading Menus...
 				</div>
@@ -210,12 +210,11 @@ export default function Menus() {
 	}
 
 	return (
-		<div className="min-h-screen bg-slate-50/50 p-8 font-sans">
-			<div className="mx-auto max-w-6xl space-y-8">
+		<div className="mx-auto w-full max-w-6xl space-y-6">
 				{/* Top Header Section */}
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<h1 className="text-2xl font-bold tracking-tight text-slate-900">
+						<h1 className="text-2xl font-semibold tracking-tight text-slate-900">
 							Menus
 						</h1>
 						<p className="text-sm text-slate-500">
@@ -246,7 +245,7 @@ export default function Menus() {
 				</div>
 
 				{/* Content Section */}
-				<div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+				<div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden transition hover:shadow-md">
 					{/* Table Header */}
 					<div className="grid grid-cols-12 gap-4 border-b border-slate-200 bg-slate-50/50 p-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
 						<div className="col-span-1 text-center">Order</div>
@@ -289,34 +288,34 @@ export default function Menus() {
 				</div>
 			</div>
 
-			{/* --- Add/Update Dialog Component --- */}
-			<MenuAddUpdateDialog
-				isOpen={isAddOpen || !!editingMenu}
-				onOpenChange={(open) => {
-					if (!open) {
-						setIsAddOpen(false);
-						setEditingMenu(null);
-					}
-				}}
-				editingMenu={editingMenu}
-				filteredMenus={filteredMenus}
-				create={create}
-				update={update}
-				onSuccess={() => {
-					// Success callbacks are handled in the component
-				}}
-			/>
+			// {/* --- Add/Update Dialog Component --- */}
+			// <MenuAddUpdateDialog
+			// 	isOpen={isAddOpen || !!editingMenu}
+			// 	onOpenChange={(open) => {
+			// 		if (!open) {
+			// 			setIsAddOpen(false);
+			// 			setEditingMenu(null);
+			// 		}
+			// 	}}
+			// 	editingMenu={editingMenu}
+			// 	filteredMenus={filteredMenus}
+			// 	create={create}
+			// 	update={update}
+			// 	onSuccess={() => {
+			// 		// Success callbacks are handled in the component
+			// 	}}
+			// />
 
-			{/* --- Delete Confirmation Component --- */}
-			<DeleteConfirmButton
-				isOpen={deleteMenuId !== null}
-				onOpenChange={(open) => !open && setDeleteMenuId(null)}
-				deleteMenuId={deleteMenuId}
-				remove={remove}
-				onSuccess={() => {
-					// Success callback is handled in the component
-				}}
-			/>
-		</div>
+			// {/* --- Delete Confirmation Component --- */}
+			// <DeleteConfirmButton
+			// 	isOpen={deleteMenuId !== null}
+			// 	onOpenChange={(open) => !open && setDeleteMenuId(null)}
+			// 	deleteMenuId={deleteMenuId}
+			// 	remove={remove}
+			// 	onSuccess={() => {
+			// 		// Success callback is handled in the component
+			// 	}}
+			// />
+		
 	);
 }
