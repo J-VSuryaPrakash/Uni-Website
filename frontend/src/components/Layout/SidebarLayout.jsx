@@ -1,13 +1,8 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 
-/**
- * SidebarLayout Component
- * 
- * @param {string} title - The title of the current page section.
- * @param {Array} menuItems - List of submenu items.
- * @param {React.ReactNode} children - The main content of the page.
- */
+// ... (SidebarLayout remains mostly the same, ensuring imports are correct)
+
 const SidebarLayout = ({ title, menuItems, children }) => {
     return (
         <div className="container mx-auto px-4 py-8">
@@ -15,11 +10,11 @@ const SidebarLayout = ({ title, menuItems, children }) => {
 
                 {/* Left Sidebar */}
                 <aside className="w-full lg:w-1/4">
-                    <div className="bg-white rounded-lg shadow-md p-6 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
-                        <h3 className="text-xl font-bold text-gray-800 mb-6 border-b pb-2">
+                    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pl-2">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6 pl-2">
                             {title}
                         </h3>
-                        <nav className="flex flex-col space-y-2">
+                        <nav className="flex flex-col space-y-3">
                             {menuItems.map((item, index) => (
                                 <SidebarItem key={index} item={item} />
                             ))}
@@ -29,7 +24,7 @@ const SidebarLayout = ({ title, menuItems, children }) => {
 
                 {/* Right Content Area */}
                 <main className="w-full lg:w-3/4">
-                    <div className="bg-white rounded-lg shadow-md p-8 min-h-[500px]">
+                    <div className="bg-white rounded-lg shadow-sm p-8 min-h-[500px] border border-gray-100">
                         {children}
                     </div>
                 </main>
@@ -40,29 +35,56 @@ const SidebarLayout = ({ title, menuItems, children }) => {
 };
 
 const SidebarItem = ({ item }) => {
+    const location = useLocation();
     const hasChildren = item.children && item.children.length > 0;
+    const [isOpen, setIsOpen] = useState(false);
+
+    // Auto-expand if a child is active
+    useEffect(() => {
+        if (hasChildren) {
+            const isChildActive = (children) => {
+                return children.some(child =>
+                    child.path === location.pathname ||
+                    (child.children && isChildActive(child.children))
+                );
+            };
+            if (isChildActive(item.children)) {
+                setIsOpen(true);
+            }
+        }
+    }, [location.pathname, item.children, hasChildren]);
+
+    const toggleOpen = (e) => {
+        e.preventDefault();
+        setIsOpen(!isOpen);
+    };
 
     if (hasChildren) {
         return (
-            <div className="space-y-1 mt-2 mb-2">
-                <div className="px-4 py-1 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    {item.label}
+            <div className="space-y-2">
+                <div
+                    onClick={toggleOpen}
+                    className="flex items-center gap-3 text-sm font-bold text-gray-800 px-2 cursor-pointer hover:text-blue-700 transition-colors"
+                >
+                    <span className={`w-2 h-2 rounded-full bg-green-500 shrink-0`}></span>
+                    <span className="flex-1">{item.label}</span>
+                    <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                 </div>
-                <div className="ml-2 border-l-2 border-gray-100 pl-2 space-y-1">
-                    {item.children.map((child, index) => (
-                        <SidebarItem key={index} item={child} />
-                    ))}
-                </div>
-            </div>
-        );
-    }
 
-    // If path is empty (like a header without children that shouldn't be clicked), disable or style differently?
-    // Assuming all leaf nodes have paths.
-    if (!item.path) {
-        return (
-            <div className="px-4 py-2 text-sm font-medium text-gray-500">
-                {item.label}
+                {isOpen && (
+                    <div className="ml-5 border-l border-gray-200 pl-3 space-y-2 animate-fadeIn">
+                        {item.children.map((child, index) => (
+                            <SidebarItem key={index} item={child} />
+                        ))}
+                    </div>
+                )}
             </div>
         );
     }
@@ -70,15 +92,19 @@ const SidebarItem = ({ item }) => {
     return (
         <NavLink
             to={item.path}
-            end={item.exact}
+            end
             className={({ isActive }) =>
-                `block px-4 py-2 rounded-md transition-colors duration-200 text-sm font-medium ${isActive
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+                `flex items-center gap-3 px-2 py-1 text-sm font-semibold transition-colors duration-200 group ${isActive ? 'text-blue-900' : 'text-gray-800 hover:text-blue-700'
                 }`
             }
         >
-            {item.label}
+            {({ isActive }) => (
+                <>
+                    <span className={`w-2 h-2 rounded-full shrink-0 transition-colors ${isActive ? 'bg-green-500' : 'bg-green-500 group-hover:bg-green-600'}`}></span>
+                    <span className="flex-1">{item.label}</span>
+                    {/* Arrow removed for leaf items */}
+                </>
+            )}
         </NavLink>
     );
 };

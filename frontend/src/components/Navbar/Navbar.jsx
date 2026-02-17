@@ -21,26 +21,26 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   // Optimized base classes
-  const navLinkBase = "transition-colors duration-300 font-medium relative";
-  const activeLinkClass = "text-yellow-600 font-semibold after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-yellow-500";
-  const inactiveLinkClass = "text-gray-700 hover:text-black hover:after:w-full hover:after:bg-gray-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:transition-all after:duration-300";
+  const navLinkBase = "transition-colors duration-300 font-medium relative tracking-wide px-3 py-1";
+  const activeLinkClass = "text-amber-400 font-semibold after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-0.5 after:bg-amber-400";
+  const inactiveLinkClass = "text-gray-100 hover:text-amber-300 hover:after:w-full hover:after:bg-amber-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:transition-all after:duration-300";
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 border-b ${scrolled
-        ? "bg-white/90 backdrop-blur-md border-gray-200 shadow-md py-2"
-        : "bg-white border-transparent py-4"
+      className={`sticky top-0 z-50 transition-all duration-300 shadow-lg ${scrolled
+        ? "bg-blue-900/95 backdrop-blur-md py-2"
+        : "bg-blue-900 py-3"
         }`}
     >
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-        {/* LOGO */}
-        <Link to="/" className="flex items-center">
-          <img src={logo} alt="JNTUK LOGO" className="h-10 w-auto" />
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between md:justify-center">
+        {/* MOBILE LOGO - Only visible on mobile */}
+        <Link to="/" className="flex items-center md:hidden">
+          <img src={logo} alt="JNTUK LOGO" className="h-10 w-auto filter brightness-0 invert" />
         </Link>
 
         {/* DESKTOP MENU */}
-        <div className="hidden md:flex items-center gap-6">
-          <nav className="flex items-center gap-5 text-sm font-semibold">
+        <div className="hidden md:flex items-center gap-10">
+          <nav className="flex items-center gap-8 text-lg font-semibold">
             {MENU_ITEMS.map((item, index) =>
               item.children ? (
                 <div
@@ -50,7 +50,7 @@ const Navbar = () => {
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <button
-                    className={`flex items-center gap-1 ${openDropdown === item.label ? 'text-yellow-600' : 'text-gray-700 hover:text-black'} transition-colors font-medium`}
+                    className={`flex items-center gap-1 px-3 py-1 ${openDropdown === item.label ? 'text-amber-400' : 'text-gray-100 hover:text-amber-300'} transition-colors font-medium tracking-wide`}
                   >
                     {item.label}
                     <svg className={`w-4 h-4 transition-transform duration-200 ${openDropdown === item.label ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,7 +120,7 @@ const Navbar = () => {
         {/* MOBILE TOGGLE */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          className="md:hidden p-2 text-white hover:bg-blue-800 rounded-lg transition-colors"
           aria-label="Toggle menu"
         >
           {mobileOpen ? (

@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import Header from "./components/Header/Header.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Home from "./pages/Home.jsx";
 import {
@@ -36,9 +37,12 @@ import Breadcrumbs from "./components/Breadcrumbs/Breadcrumbs.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function App() {
+  const location = useLocation();
+
   return (
     <>
       <ScrollToTop />
+      {location.pathname === '/' && <Header />}
       <Navbar />
       <Breadcrumbs />
       <Routes>

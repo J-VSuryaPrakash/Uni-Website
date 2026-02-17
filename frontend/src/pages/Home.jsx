@@ -82,14 +82,7 @@ const Home = () => {
                             The gateway to excellence and innovation in <span className="font-semibold text-blue-800">engineering</span>, where tradition meets modernity.
                         </p> */}
 
-                        <div className="mt-8 flex gap-4">
-                            <Link to="/about" className="px-8 py-3 bg-blue-900 text-white font-semibold rounded-full shadow-lg hover:bg-blue-800 transition-all hover:shadow-xl hover:-translate-y-1">
-                                Explore Campus
-                            </Link>
-                            <Link to="/academics" className="px-8 py-3 bg-white text-blue-900 border border-blue-200 font-semibold rounded-full shadow-sm hover:bg-gray-50 transition-all">
-                                Academics
-                            </Link>
-                        </div>
+                        {/* Buttons Removed as per request */}
                     </div>
                 </div>
             </section>

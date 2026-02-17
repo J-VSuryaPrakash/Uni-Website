@@ -24,9 +24,9 @@ const Breadcrumbs = () => {
     };
 
     return (
-        <div className="bg-blue-900 text-white py-3 px-4 shadow-md">
+        <div className="bg-gray-100 text-gray-600 py-3 px-4 shadow-inner border-b border-gray-200">
             <div className="max-w-7xl mx-auto flex items-center text-sm font-medium">
-                <Link to="/" className="hover:text-yellow-400 transition-colors flex items-center gap-1">
+                <Link to="/" className="hover:text-blue-700 transition-colors flex items-center gap-1">
                     Home
                 </Link>
                 {pathnames.map((name, index) => {
@@ -41,9 +41,9 @@ const Breadcrumbs = () => {
                         <div key={name} className="flex items-center">
                             <span className="mx-2 text-gray-400">/</span>
                             {isLast ? (
-                                <span className="text-white font-semibold">{label}</span>
+                                <span className="text-blue-900 font-bold">{label}</span>
                             ) : (
-                                <Link to={routeTo} className="hover:text-yellow-400 transition-colors">
+                                <Link to={routeTo} className="hover:text-blue-700 transition-colors">
                                     {label}
                                 </Link>
                             )}
