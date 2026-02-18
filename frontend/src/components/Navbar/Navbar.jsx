@@ -42,7 +42,7 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-10">
           <nav className="flex items-center gap-8 text-lg font-semibold">
             {MENU_ITEMS.map((item, index) =>
-              item.children ? (
+              item.children && !item.hideChildrenInNavbar ? (
                 <div
                   key={item.label}
                   className="relative group"
@@ -142,7 +142,7 @@ const Navbar = () => {
       >
         <div className="px-4 space-y-1">
           {MENU_ITEMS.map((item) =>
-            item.children ? (
+            item.children && !item.hideChildrenInNavbar ? (
               <details key={item.label} className="group/mobile">
                 <summary className="cursor-pointer flex items-center justify-between px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium select-none">
                   {item.label}

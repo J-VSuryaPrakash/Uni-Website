@@ -11,7 +11,12 @@ import {
   UniversitySong, MoUs, APCS, ActStatutes, RTI, AntiRagging, ContactSidebar,
 
   // Administration
-  Administration,
+  Administration, Chancellor, ViceChancellor, Rector, Registrar, OSD,
+  ExecutiveCouncil, FinanceCommittee, BoardOfStudies, JNTUKVCs,
+  Directorates, DirectorAcademics, DirectorAffiliations, DirectorEvaluations,
+  DirectorStudentAffairs, DirectorIQAC, DirectorResearch, DirectorIT,
+  DirectorRelations, DirectorAdmissions, DirectorIST, EstateOfficer,
+  Principals, UCEK, UCEN,
 
   // Academics
   Academics, Methodology, AcademicAdmission, Undergraduate, Postgraduate, Research, Programmes,
@@ -35,6 +40,9 @@ import Footer from "./components/Footer/Footer.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Breadcrumbs from "./components/Breadcrumbs/Breadcrumbs.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import { Navigate } from "react-router-dom"; // Import Navigate
+
+import Ticker from "./components/Ticker/Ticker.jsx";
 
 function App() {
   const location = useLocation();
@@ -43,6 +51,7 @@ function App() {
     <>
       <ScrollToTop />
       {location.pathname === '/' && <Header />}
+      {location.pathname === '/' && <Ticker />}
       <Navbar />
       <Breadcrumbs />
       <Routes>
@@ -74,7 +83,35 @@ function App() {
         {/* /contact is handled below as a main route, but included in sidebar logic via Navbar/Menu */}
 
         {/* --- Administration --- */}
-        <Route path="/administration" element={<Administration />} />
+        <Route path="/administration" element={<Navigate to="/administration/chancellor" replace />} />
+        <Route path="/administration/chancellor" element={<Chancellor />} />
+        <Route path="/administration/vc" element={<ViceChancellor />} />
+        <Route path="/administration/rector" element={<Rector />} />
+        <Route path="/administration/registrar" element={<Registrar />} />
+        <Route path="/administration/osd" element={<OSD />} />
+        <Route path="/administration/executive-council" element={<ExecutiveCouncil />} />
+        <Route path="/administration/finance-committee" element={<FinanceCommittee />} />
+        <Route path="/administration/board-of-studies" element={<BoardOfStudies />} />
+        <Route path="/administration/jntuk-vcs" element={<JNTUKVCs />} />
+
+        {/* Directorates */}
+        <Route path="/administration/directorates" element={<Directorates />} />
+        <Route path="/administration/director-academics" element={<DirectorAcademics />} />
+        <Route path="/administration/director-affiliations" element={<DirectorAffiliations />} />
+        <Route path="/administration/director-evaluations" element={<DirectorEvaluations />} />
+        <Route path="/administration/director-student-affairs" element={<DirectorStudentAffairs />} />
+        <Route path="/administration/director-iqac" element={<DirectorIQAC />} />
+        <Route path="/administration/director-research" element={<DirectorResearch />} />
+        <Route path="/administration/director-it" element={<DirectorIT />} />
+        <Route path="/administration/director-relations" element={<DirectorRelations />} />
+        <Route path="/administration/director-admissions" element={<DirectorAdmissions />} />
+        <Route path="/administration/director-ist" element={<DirectorIST />} />
+        <Route path="/administration/estate-officer" element={<EstateOfficer />} />
+
+        {/* Principals */}
+        <Route path="/administration/principals" element={<Principals />} />
+        <Route path="/administration/ucek" element={<UCEK />} />
+        <Route path="/administration/ucen" element={<UCEN />} />
 
         {/* --- Academics --- */}
         <Route path="/academics" element={<Academics />} />

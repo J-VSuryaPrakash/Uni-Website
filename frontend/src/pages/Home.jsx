@@ -14,6 +14,13 @@ import {
     Phone,
     Mail
 } from 'lucide-react';
+import aicte from '../assets/aicte.svg'
+import apsche from '../assets/apsche.svg'
+import mhrd from '../assets/mhrd.svg'
+import naac from '../assets/NAAC.svg'
+import nirf from '../assets/NIRF.svg'
+import ugc from '../assets/UGC.svg'
+import Samadhaan from '../assets/Samadhaan.svg'
 import { Link } from 'react-router-dom';
 import vc from '../assets/vc.jpg'
 const Home = () => {
@@ -28,27 +35,39 @@ const Home = () => {
         { id: 5, date: '03-12-2025', desc: 'JNTUK - D Academics - Notification - RRMs', dept: 'Director - Academics' },
     ];
 
+    const [currentHappening, setCurrentHappening] = useState(0);
+
     const happenings = [
         {
             id: 1,
             title: "79th Independence Day",
-            desc: "Celebrations at JNTUK Kakinada - 2025",
-            image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1000&auto=format&fit=crop" // Placeholder
+            desc: "Celebrations at JNTUK Kakinada - 2025. The Vice Chancellor hoisted the national flag and addressed the gathering.",
+            image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1000&auto=format&fit=crop",
+            date: "15 Aug 2025"
         },
         {
             id: 2,
-            title: "79th Independence Day",
-            desc: "Celebrations at JNTUK Kakinada - 2025",
-            image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1000&auto=format&fit=crop" // Placeholder
+            title: "International Conference on AI",
+            desc: "A 3-day conference on Artificial Intelligence and Machine Learning featuring global experts.",
+            image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1000&auto=format&fit=crop",
+            date: "10 Sep 2025"
         },
         {
             id: 3,
-            title: "79th Independence Day",
-            desc: "Celebra at JNTUK Kakinada - 2025",
-            image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1000&auto=format&fit=crop" // Placeholder
+            title: "Tech Fest 2025",
+            desc: "Annual technical symposium of JNTUK demonstrating student innovations and projects.",
+            image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop",
+            date: "05 Oct 2025"
         },
-        // Add more slides later
     ];
+
+    const nextHappening = () => {
+        setCurrentHappening((prev) => (prev === happenings.length - 1 ? 0 : prev + 1));
+    };
+
+    const prevHappening = () => {
+        setCurrentHappening((prev) => (prev === 0 ? happenings.length - 1 : prev - 1));
+    };
 
     const portals = [
         { label: "JNTUK Placement Cell", icon: <Briefcase className="w-8 h-8 text-purple-600" />, color: "bg-purple-50" },
@@ -130,26 +149,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            {/* TICKER / MARQUEE */}
-            <div className="bg-blue-900 text-white relative z-20 shadow-lg">
-                <div className="max-w-7xl mx-auto flex items-center h-12">
-                    <div className="bg-red-600 h-full flex items-center px-4 font-bold text-sm tracking-wider uppercase shrink-0">
-                        Live Scrolling
-                    </div>
-                    <div className="flex-1 overflow-hidden relative mx-4">
-                        <div className="animate-marquee whitespace-nowrap text-sm font-medium">
-                            <span className="mx-4">02-02-2026 Notification for Recruitment of Microbiologist (Contract) – Food Testing Laboratory, JNTUK</span>
-                            <span className="mx-4 text-yellow-300">★</span>
-                            <span className="mx-4">31-01-2026 R24 MBA & MCA Revised Question Paper Patterns</span>
-                            <span className="mx-4 text-yellow-300">★</span>
-                            <span className="mx-4">XII Convocation Notification - JNTUK Kakinada</span>
-                        </div>
-                    </div>
-                    <div className="bg-yellow-500 text-blue-900 h-full flex items-center px-4 font-bold text-xs uppercase shrink-0">
-                        New Updates
-                    </div>
-                </div>
-            </div>
+            {/* TICKER MOVED TO APP HEADER */}
 
             {/* NOTIFICATION CENTER */}
             <section className="py-16 px-4 bg-white">
@@ -211,7 +211,7 @@ const Home = () => {
                                 </table>
                             </div>
                             <div className="p-4 bg-gray-50 flex justify-center md:hidden">
-                                <Link to="/about/notifications" className="text-sm font-semibold text-blue-600">View All Notifications</Link>
+                                <Link to="/happenings" className="text-sm font-semibold text-blue-600">View All Notifications</Link>
                             </div>
                         </div>
                     </div>
@@ -247,30 +247,48 @@ const Home = () => {
                                 </div>
                             </div>
 
-                            <button className="px-8 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-yellow-400 transition-colors shadow-lg">
+                            <Link to="/happenings" className="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-yellow-400 transition-colors shadow-lg">
                                 View All Happenings
-                            </button>
+                            </Link>
                         </div>
 
                         {/* CAROUSEL PLACEHOLDER */}
                         <div className="relative">
                             <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 relative group">
                                 <img
-                                    src={happenings[0].image}
+                                    src={happenings[currentHappening].image}
                                     alt="Happenings"
                                     className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
-                                    <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-3">LATEST EVENT</span>
-                                    <h3 className="text-2xl font-bold text-white mb-2">{happenings[0].title}</h3>
-                                    <p className="text-gray-300">{happenings[0].desc}</p>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">LATEST EVENT</span>
+                                        <span className="text-white/80 text-sm font-medium flex items-center gap-1">
+                                            <Calendar className="w-4 h-4" />
+                                            {happenings[currentHappening].date}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2">{happenings[currentHappening].title}</h3>
+                                    <p className="text-gray-300 line-clamp-2">{happenings[currentHappening].desc}</p>
                                 </div>
                             </div>
 
-                            {/* Navigation Buttons (Visual only for now) */}
+                            {/* Navigation Buttons */}
                             <div className="absolute -bottom-6 right-8 flex gap-2">
-                                <button className="w-12 h-12 bg-white rounded-full text-blue-900 flex items-center justify-center shadow-lg hover:bg-yellow-400 transition-colors">←</button>
-                                <button className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-500 transition-colors">→</button>
+                                <button
+                                    onClick={prevHappening}
+                                    className="w-12 h-12 bg-white rounded-full text-blue-900 flex items-center justify-center shadow-lg hover:bg-yellow-400 transition-colors z-20 cursor-pointer"
+                                    aria-label="Previous Slide"
+                                >
+                                    ←
+                                </button>
+                                <button
+                                    onClick={nextHappening}
+                                    className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-500 transition-colors z-20 cursor-pointer"
+                                    aria-label="Next Slide"
+                                >
+                                    →
+                                </button>
                             </div>
                         </div>
 
@@ -279,74 +297,59 @@ const Home = () => {
             </section>
 
             {/* JNTUK SITES GRID */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-12 bg-gradient-to-b from-white to-blue-50/30">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 uppercase tracking-tight">JNTUK Sites</h2>
-                        <div className="w-20 h-1 bg-blue-600 mx-auto mt-4 rounded-full"></div>
+                    <div className="text-center mb-10">
+                        <span className="text-blue-600 font-bold tracking-wider uppercase text-sm bg-blue-50 px-4 py-1.5 rounded-full inline-block mb-2">Quick Access</span>
+                        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Explore JNTUK Portals</h2>
+                        <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-yellow-400 mx-auto mt-4 rounded-full opacity-80"></div>
                     </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         {portals.map((portal) => (
                             <a
                                 key={portal.label}
                                 href="#"
-                                className="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col items-center justify-center text-center gap-4 hover:-translate-y-2"
+                                className="group relative bg-white p-5 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_25px_rgb(0,0,0,0.06)] transition-all duration-500 flex flex-col items-center justify-center text-center gap-3 border border-gray-50 hover:border-blue-100 hover:-translate-y-1 overflow-hidden"
                             >
-                                <div className={`w-16 h-16 rounded-2xl ${portal.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                                {/* Background Decoration */}
+                                <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full ${portal.color} opacity-20 blur-xl group-hover:scale-150 transition-transform duration-700`}></div>
+                                {/* Icon Container */}
+                                <div className={`relative w-16 h-16 rounded-full ${portal.color} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm ring-2 ring-white`}>
                                     {portal.icon}
                                 </div>
-                                <h3 className="font-bold text-sm text-gray-700 group-hover:text-blue-700 transition-colors break-words w-full">
+                                {/* Label */}
+                                <h3 className="font-bold text-sm text-gray-700 group-hover:text-blue-700 transition-colors w-full px-1 relative z-10 leading-tight">
                                     {portal.label}
                                 </h3>
+                                {/* Hover Indicator */}
+                                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-yellow-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                             </a>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* MAP / ADDRESS FOOTER PREVIEW (Before actual footer) */}
-            <section className="bg-white py-12 border-t border-gray-100">
-                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
-                    <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-6">Communication Address</h3>
-                        <div className="space-y-4 text-gray-600">
-                            <div className="flex items-start gap-4">
-                                <Users className="w-5 h-5 text-blue-600 shrink-0 mt-1" />
-                                <div>
-                                    <p className="font-semibold text-gray-900">The Registrar</p>
-                                    <p>Jawaharlal Nehru Technological University</p>
-                                    <p>Kakinada, Andhra Pradesh 533003</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Phone className="w-5 h-5 text-blue-600 shrink-0" />
-                                <p>+91 884 230 0900</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Mail className="w-5 h-5 text-blue-600 shrink-0" />
-                                <p>registrar@jntuk.edu.in</p>
-                            </div>
-                        </div>
+            {/* ACCREDITATIONS SECTION */}
+            <section className="py-12 bg-white border-t border-gray-100">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="text-center mb-10">
+                        <span className="text-blue-600 font-bold tracking-wider uppercase text-sm bg-blue-50 px-4 py-1.5 rounded-full inline-block mb-3">Recognitions</span>
+                        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">University Accreditations</h2>
+                        <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-yellow-400 mx-auto mt-4 rounded-full opacity-80"></div>
                     </div>
 
-                    <div className="h-64 rounded-2xl overflow-hidden bg-gray-200 shadow-inner">
-                        {/* Embed Google Map Placeholder */}
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3815.939634710186!2d82.2396!3d16.9749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a382847c0c16b9b%3A0xe781907cb3a34246!2sJawaharlal%20Nehru%20Technological%20University%20Kakinada!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            allowFullScreen=""
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                        ></iframe>
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-80  hover:grayscale-0 transition-all duration-500">
+                        <img src={aicte} alt="AICTE" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="All India Council for Technical Education" />
+                        <img src={ugc} alt="UGC" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="University Grants Commission" />
+                        <img src={nirf} alt="NIRF" className="h-12 md:h-14 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="National Institutional Ranking Framework" />
+                        <img src={naac} alt="NAAC" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="National Assessment and Accreditation Council" />
+                        <img src={apsche} alt="APSCHE" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="Andhra Pradesh State Council of Higher Education" />
+                        <img src={mhrd} alt="MHRD" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="Ministry of Education (MHRD)" />
+                        <img src={Samadhaan} alt="SAMADHAAN" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="UGC e-Samadhaan" />
                     </div>
                 </div>
             </section>
-
         </div>
     );
 };
-
 export default Home;

@@ -4,13 +4,14 @@ export const MENU_ITEMS = [
         path: "",
         children: [
             { label: "About JNTUK", path: "/about" },
-            { label: "Governance, Leadership and Management",
-              path: "/",
-              children: [
-                { label: "Institutional Vision and Leadership", path: "/institutional-vision-and-leadership" },
-                { label: "Core Values", path: "/core-values" },
-                { label: "Institutional Values and Best Practices", path: "/institutional-values-and-best-practices" },
-              ]
+            {
+                label: "Governance, Leadership and Management",
+                path: "/",
+                children: [
+                    { label: "Institutional Vision and Leadership", path: "/institutional-vision-and-leadership" },
+                    { label: "Core Values", path: "/core-values" },
+                    { label: "Institutional Values and Best Practices", path: "/institutional-values-and-best-practices" },
+                ]
             },
             {
                 label: "SWOC",
@@ -33,12 +34,49 @@ export const MENU_ITEMS = [
             { label: "JNTUK Act & Statutes", path: "/act-statutes" },
             { label: "RTI Act", path: "/rti-act" },
             { label: "Anti Ragging", path: "/anti-ragging" },
-        
+
         ],
     },
     {
         label: "Administration",
-        path: "/administration",
+        path: "/administration", // Will redirect to /administration/chancellor
+        hideChildrenInNavbar: true,
+        children: [
+            { label: "Chancellor", path: "/administration/chancellor" },
+            { label: "Vice Chancellor", path: "/administration/vc" },
+            { label: "Rector", path: "/administration/rector" },
+            { label: "Registrar", path: "/administration/registrar" },
+            { label: "Officer on Special Duty", path: "/administration/osd" },
+            { label: "Executive Council", path: "/administration/executive-council" },
+            { label: "Finance Committee Members", path: "/administration/finance-committee" },
+            { label: "Board of Studies", path: "/administration/board-of-studies" },
+            { label: "JNTUK Vice Chancellors", path: "/administration/jntuk-vcs" },
+            {
+                label: "Directorates",
+                path: "/administration/directorates", // Parent path
+                children: [
+                    { label: "Director - Academics", path: "/administration/director-academics" },
+                    { label: "Director - Affiliations & Legal Matters", path: "/administration/director-affiliations" },
+                    { label: "Director - Evaluations", path: "/administration/director-evaluations" },
+                    { label: "Director - Student Affairs", path: "/administration/director-student-affairs" },
+                    { label: "Director - IQAC & Capacity Building", path: "/administration/director-iqac" },
+                    { label: "Director - Sponsored Research & IIIC", path: "/administration/director-research" },
+                    { label: "Director - IT, OL & ODL", path: "/administration/director-it" },
+                    { label: "Director - Corporate, Alumni & International Relations", path: "/administration/director-relations" },
+                    { label: "Director - Admissions", path: "/administration/director-admissions" },
+                    { label: "Director - Institute of Science & Technology", path: "/administration/director-ist" },
+                    { label: "University Engineer-cum-Estate Officer", path: "/administration/estate-officer" },
+                ]
+            },
+            {
+                label: "Principals",
+                path: "/administration/principals", // Parent path
+                children: [
+                    { label: "JNTUK UCEK", path: "/administration/ucek" },
+                    { label: "JNTUK UCEN", path: "/administration/ucen" },
+                ]
+            }
+        ]
     },
     {
         label: "Academics",

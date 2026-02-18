@@ -65,7 +65,42 @@ export const ContactSidebar = () => <SectionLayout sectionLabel={ABOUT} title="C
 
 
 // --- Administration Section ---
-export const Administration = () => <SectionLayout sectionLabel="Administration" title="Administration" />;
+// --- Administration Section ---
+// --- Administration Section ---
+const ADMINISTRATION = "Administration";
+export const Administration = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Administration" />;
+
+// Officials
+export const Chancellor = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Chancellor" />;
+export const ViceChancellor = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Vice Chancellor" />;
+export const Rector = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Rector" />;
+export const Registrar = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Registrar" />;
+export const OSD = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Officer on Special Duty" />;
+
+// Councils & Committees
+export const ExecutiveCouncil = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Executive Council" />;
+export const FinanceCommittee = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Finance Committee Members" />;
+export const BoardOfStudies = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Board of Studies" />;
+export const JNTUKVCs = () => <SectionLayout sectionLabel={ADMINISTRATION} title="JNTUK Vice Chancellors" />;
+
+// Directorates
+export const Directorates = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Directorates" />; // Parent page
+export const DirectorAcademics = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Academics" />;
+export const DirectorAffiliations = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Affiliations & Legal Matters" />;
+export const DirectorEvaluations = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Evaluations" />;
+export const DirectorStudentAffairs = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Student Affairs" />;
+export const DirectorIQAC = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - IQAC & Capacity Building" />;
+export const DirectorResearch = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Sponsored Research & IIIC" />;
+export const DirectorIT = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - IT, OL & ODL" />;
+export const DirectorRelations = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Corporate, Alumni & International Relations" />;
+export const DirectorAdmissions = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Admissions" />;
+export const DirectorIST = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Director - Institute of Science & Technology" />;
+export const EstateOfficer = () => <SectionLayout sectionLabel={ADMINISTRATION} title="University Engineer-cum-Estate Officer" />;
+
+// Principals
+export const Principals = () => <SectionLayout sectionLabel={ADMINISTRATION} title="Principals" />; // Parent page
+export const UCEK = () => <SectionLayout sectionLabel={ADMINISTRATION} title="JNTUK UCEK" />;
+export const UCEN = () => <SectionLayout sectionLabel={ADMINISTRATION} title="JNTUK UCEN" />;
 
 
 // --- Academics Section ---

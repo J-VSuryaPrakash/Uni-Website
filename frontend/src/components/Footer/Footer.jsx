@@ -1,4 +1,15 @@
 import { Link } from "react-router-dom";
+import {
+    MapPin,
+    Phone,
+    Mail,
+    Facebook,
+    Twitter,
+    Instagram,
+    Linkedin,
+    Youtube,
+    ArrowUp
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 const Footer = () => {
@@ -18,109 +29,139 @@ const Footer = () => {
     };
 
     return (
-        <>
-            <footer className="bg-black text-white pt-16 pb-8">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                        {/* Contact Us */}
-                        <div className="space-y-6">
-                            <h3 className="text-xl font-bold">Contact Us</h3>
-                            <div className="space-y-4 text-gray-400 text-sm">
-                                <div className="flex gap-3">
-                                    <svg className="w-5 h-5 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <p>The Registrar,<br />Jawaharlal Nehru Technological University,<br />Kakinada, Andhra Pradesh 533003</p>
+        <footer className="bg-slate-900 text-slate-300 font-sans relative overflow-hidden">
+            {/* Decorative Background Elements */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 via-yellow-500 to-blue-600"></div>
+            <div className="absolute -top-[20%] -right-[10%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-3xl"></div>
+            <div className="absolute top-[30%] -left-[10%] w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-3xl"></div>
+
+            <div className="max-w-7xl mx-auto px-6 py-16 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+                    {/* Column 1: Identity & About (Span 4) */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <div>
+                            <h2 className="text-2xl font-bold text-white tracking-wide">JNTUK</h2>
+                            <p className="text-blue-400 text-sm font-medium tracking-widest uppercase">Kakinada</p>
+                        </div>
+                        <p className="text-sm leading-relaxed text-slate-400 text-justify">
+                            Jawaharlal Nehru Technological University Kakinada is a public university, located in Kakinada, Andhra Pradesh, India, and one of India's leading educational universities focusing on engineering.
+                        </p>
+
+                        <div className="flex gap-3 pt-2">
+                            {[
+                                { Icon: Facebook, color: "hover:bg-blue-600" },
+                                { Icon: Twitter, color: "hover:bg-sky-500" },
+                                { Icon: Instagram, color: "hover:bg-pink-600" },
+                                { Icon: Linkedin, color: "hover:bg-blue-700" },
+                                { Icon: Youtube, color: "hover:bg-red-600" }
+                            ].map(({ Icon, color }, index) => (
+                                <a
+                                    key={index}
+                                    href="#"
+                                    className={`w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 transition-all duration-300 hover:text-white hover:-translate-y-1 ${color}`}
+                                >
+                                    <Icon size={18} />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Column 2: Quick Links (Span 2) */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <h3 className="text-white font-bold text-lg relative inline-block">
+                            Quick Links
+                            <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-yellow-500 rounded-full"></span>
+                        </h3>
+                        <ul className="space-y-3 text-sm">
+                            {['Admissions', 'Examinations', 'Results', 'Alumni', 'Placement Cell', 'RTI Act'].map((item) => (
+                                <li key={item}>
+                                    <a href="#" className="hover:text-yellow-400 transition-colors flex items-center gap-2 group">
+                                        <span className="w-1.5 h-1.5 bg-slate-600 rounded-full group-hover:bg-yellow-500 transition-colors"></span>
+                                        {item}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Column 3: Contact Info (Span 3) */}
+                    <div className="lg:col-span-3 space-y-6">
+                        <h3 className="text-white font-bold text-lg relative inline-block">
+                            Contact Us
+                            <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-yellow-500 rounded-full"></span>
+                        </h3>
+                        <div className="space-y-4 text-sm">
+                            <div className="flex items-start gap-4 group">
+                                <div className="p-2 bg-blue-900/30 rounded-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <MapPin size={18} />
                                 </div>
-                                <div className="flex gap-3 items-center">
-                                    <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                    </svg>
-                                    <p>+91 884 230 0900</p>
-                                </div>
-                                <div className="flex gap-3 items-center">
-                                    <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                    </svg>
-                                    <p>+91 884 230 0901</p>
+                                <div>
+                                    <p className="font-semibold text-white mb-1">The Registrar</p>
+                                    <p className="text-slate-400">JNTUK, Pithapuram Road,</p>
+                                    <p className="text-slate-400">Kakinada, Andhra Pradesh 533003</p>
                                 </div>
                             </div>
-                            {/* Social Icons */}
-                            {/* <div className="flex gap-3">
-                                {['facebook', 'twitter', 'instagram', 'linkedin', 'youtube'].map((social) => (
-                                    <a
-                                        key={social}
-                                        href="#"
-                                        className="w-8 h-8 rounded bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors"
-                                    >
-                                        <span className="sr-only">{social}</span>
 
-                                        <div className="w-4 h-4 bg-black/20 rounded-sm"></div>
-                                    </a>
-                                ))}
-                            </div> */}
-                        </div>
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-2 bg-blue-900/30 rounded-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <Phone size={18} />
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-white mb-1">Phone</p>
+                                    <p className="text-slate-400">+91 884 230 0900</p>
+                                </div>
+                            </div>
 
-                        {/* Support */}
-                        <div className="space-y-6">
-                            <h3 className="text-xl font-bold">Support</h3>
-                            <ul className="space-y-3 text-gray-400 text-sm">
-                                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                                <li><Link to="/support" className="hover:text-white transition-colors">Support</Link></li>
-                                <li><Link to="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
-                                <li><Link to="/disclaimer" className="hover:text-white transition-colors">Disclaimer</Link></li>
-                                <li><Link to="/policies" className="hover:text-white transition-colors">Policies</Link></li>
-                            </ul>
-                        </div>
-
-                        {/* Other Important Links */}
-                        <div className="space-y-6">
-                            <h3 className="text-xl font-bold">Other Important Links</h3>
-                            <ul className="space-y-3 text-gray-400 text-sm">
-                                <li><a href="#" className="hover:text-white transition-colors">UGC</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">AICTE</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">APSCHE</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">AP ECET</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">AP PGECET</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">AP EAPCET</a></li>
-                            </ul>
-                        </div>
-
-                        {/* Other Portals */}
-                        <div className="space-y-6">
-                            <h3 className="text-xl font-bold">Other Portals</h3>
-                            <ul className="space-y-3 text-gray-400 text-sm">
-                                <li><a href="#" className="hover:text-white transition-colors">UGC SWAYAM - TVCS & RADIO JINGLES FOR SWAYAM INITIATIVE</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Jntuk eLearn</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Infosys Springboard</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Board for Community Development through Education (BCDE)</a></li>
-                            </ul>
+                            <div className="flex items-center gap-4 group">
+                                <div className="p-2 bg-blue-900/30 rounded-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <Mail size={18} />
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-white mb-1">Email</p>
+                                    <p className="text-slate-400">registrar@jntuk.edu.in</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Bottom Bar */}
-                    <div className="border-t border-gray-800 pt-8 flex flex-col items-center text-center">
-                        <div className="text-sm text-gray-400 space-y-1">
-                            <p>All Copyright © 2024 <span className="font-bold text-white">Jawaharlal Nehru Technological University, Kakinada</span>. All Rights Reserved.</p>
-                            <p className="text-xs">Designed and Developed By <span className="font-bold text-white">Students of JNTUK Department of CSE</span></p>
+                    {/* Column 4: Map (Span 3) */}
+                    <div className="lg:col-span-3 space-y-6">
+                        <h3 className="text-white font-bold text-lg relative inline-block">
+                            Location
+                            <span className="absolute -bottom-2 left-0 w-1/2 h-1 bg-yellow-500 rounded-full"></span>
+                        </h3>
+                        <div className="h-48 w-full rounded-xl overflow-hidden border-2 border-slate-700 shadow-lg grayscale hover:grayscale-0 transition-all duration-500">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3815.939634710186!2d82.2396!3d16.9749!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a382847c0c16b9b%3A0xe781907cb3a34246!2sJawaharlal%20Nehru%20Technological%20University%20Kakinada!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
                         </div>
                     </div>
+
                 </div>
-            </footer>
 
-            {/* Floating Scroll to Top Button */}
+                {/* Bottom Bar */}
+                <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-slate-500">
+                    <p>© 2024 <span className="text-white font-semibold">JNTUK</span>. All Rights Reserved.</p>
+                </div>
+            </div>
+
+            {/* Scroll to Top */}
             <button
                 onClick={scrollToTop}
-                className={`fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-black/80 backdrop-blur-sm text-white flex items-center justify-center shadow-2xl hover:bg-black transition-all duration-300 transform border border-gray-700 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'
+                className={`fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-yellow-500 text-blue-900 flex items-center justify-center shadow-lg hover:bg-yellow-400 hover:-translate-y-1 transition-all duration-300 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0'
                     }`}
                 aria-label="Scroll to top"
             >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                </svg>
+                <ArrowUp size={24} strokeWidth={2.5} />
             </button>
-        </>
+        </footer>
     );
 };
 
