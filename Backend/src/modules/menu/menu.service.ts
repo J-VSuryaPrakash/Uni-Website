@@ -90,6 +90,25 @@ export default class MenuService {
 		});
 	}
 
+	private get publishedChildrenInclude() {
+		return {
+			where: { status: "published" as const },
+			orderBy: { position: "asc" as const },
+			include: {
+				children: {
+					where: { status: "published" as const },
+					orderBy: { position: "asc" as const },
+					include: {
+						children: {
+							where: { status: "published" as const },
+							orderBy: { position: "asc" as const },
+						},
+					},
+				},
+			},
+		};
+	}
+
 	async getMenuTreeById(menuID: number) {
 		const menuTree = await prisma.menu.findUnique({
 			where: { id: menuID },
@@ -101,10 +120,7 @@ export default class MenuService {
 					},
 					orderBy: { position: "asc" },
 					include: {
-						children: {
-							where: { status: "published" },
-							orderBy: { position: "asc" },
-						},
+						children: this.publishedChildrenInclude,
 					},
 				},
 			},
@@ -120,6 +136,7 @@ export default class MenuService {
 	async getMenuTree() {
 		const menusTree = await prisma.menu.findMany({
 			where: { isActive: true },
+			orderBy: { position: "asc" },
 			include: {
 				pages: {
 					where: {
@@ -128,10 +145,7 @@ export default class MenuService {
 					},
 					orderBy: { position: "asc" },
 					include: {
-						children: {
-							where: { status: "published" },
-							orderBy: { position: "asc" },
-						},
+						children: this.publishedChildrenInclude,
 					},
 				},
 			},

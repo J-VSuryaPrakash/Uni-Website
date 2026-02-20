@@ -10,4 +10,7 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"], // ✅ CRITICAL
   },
+  server: {
+    port: 5174,
+  },
 });

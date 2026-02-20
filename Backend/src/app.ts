@@ -63,8 +63,12 @@ const app = express();
 // app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(
 	cors({
-		origin: "http://localhost:5173", // Your frontend URL
-		credentials: true, // Allow cookies/headers
+		origin: [
+			"http://localhost:5173", // Admin frontend
+			"http://localhost:5174", // Public frontend
+			process.env.CLIENT_URL || "",
+		].filter(Boolean),
+		credentials: true,
 	}),
 );
 app.use(express.json()); // Parse JSON request bodies
@@ -115,6 +119,7 @@ app.use("/api/v1/admin/page-directorates", pageDirectorateRoutes);
 // Public: Read-only access to notification attachments
 // --------------------------------------------------
 app.use("/api/v1/admin/notifications", notificationRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/admin/notification-attachments", notificationAttachmentRoutes);
 app.use("/api/v1/notification-attachments", publicNotificationAttachmentRoutes);
 

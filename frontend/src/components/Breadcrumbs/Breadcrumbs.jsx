@@ -1,18 +1,20 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { MENU_ITEMS } from '../Navbar/MenuItem';
+import { useMenuTree } from '../../hooks/useMenuTree';
 
 const Breadcrumbs = () => {
     const location = useLocation();
     const { pathname } = location;
+    const { data: menuTree } = useMenuTree();
 
     // Don't show on home page
     if (pathname === '/') return null;
 
     const pathnames = pathname.split('/').filter((x) => x);
 
-    // Helper to find label for a path
+    // Helper to find label for a path from dynamic menu tree
     const findLabel = (items, currentPath) => {
+        if (!items) return null;
         for (const item of items) {
             if (item.path === currentPath) return item.label;
             if (item.children) {
@@ -20,7 +22,7 @@ const Breadcrumbs = () => {
                 if (found) return found;
             }
         }
-        return null; // Fallback handled later
+        return null;
     };
 
     return (
@@ -33,8 +35,8 @@ const Breadcrumbs = () => {
                     const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
                     const isLast = index === pathnames.length - 1;
 
-                    // Try to find a human-readable label from menu items, fallback to capitalizing path segment
-                    const label = findLabel(MENU_ITEMS, routeTo) ||
+                    // Try dynamic menu tree first, then fallback to capitalizing path segment
+                    const label = findLabel(menuTree || [], routeTo) ||
                         decodeURIComponent(name).replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
                     return (

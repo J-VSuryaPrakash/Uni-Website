@@ -69,6 +69,13 @@ export class EventService {
             },
             orderBy: {
                 position: 'asc'
+            },
+            include: {
+                category: true,
+                media: {
+                    orderBy: { position: 'asc' },
+                    include: { media: true }
+                }
             }
         });
 

@@ -7,6 +7,8 @@ const router = Router();
 // Public routes
 
 router.get("/live-scrolling", getLiveScrollingNotifications);
+router.get("/public", getNotifications);
+router.get("/public/:category", getNotificationByCategory);
 
 // Admin routes
 

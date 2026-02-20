@@ -1,7 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useLiveScrolling } from '../../hooks/useLiveScrolling';
 
 const Ticker = () => {
+    const { data: notifications } = useLiveScrolling();
+
+    // Don't render ticker if no live notifications
+    if (!notifications || notifications.length === 0) {
+        return null;
+    }
+
     return (
         <div className="bg-blue-900 text-white relative z-30 shadow-md" style={{ borderBottom: '5px solid #F59E0B' }}>
             <div className="max-w-7xl mx-auto flex items-center h-10 md:h-12">
@@ -14,11 +22,14 @@ const Ticker = () => {
                 {/* Marquee Content */}
                 <div className="flex-1 overflow-hidden relative mx-2 md:mx-4">
                     <div className="animate-marquee whitespace-nowrap text-xs md:text-sm font-medium flex items-center">
-                        <span className="mx-4">02-02-2026 Notification for Recruitment of Microbiologist (Contract) – Food Testing Laboratory, JNTUK</span>
-                        <span className="mx-4 text-yellow-300">★</span>
-                        <span className="mx-4">31-01-2026 R24 MBA & MCA Revised Question Paper Patterns</span>
-                        <span className="mx-4 text-yellow-300">★</span>
-                        <span className="mx-4">XII Convocation Notification - JNTUK Kakinada</span>
+                        {notifications.map((notif, index) => (
+                            <React.Fragment key={notif.id}>
+                                <span className="mx-4">{notif.title}</span>
+                                {index < notifications.length - 1 && (
+                                    <span className="mx-4 text-yellow-300">&#9733;</span>
+                                )}
+                            </React.Fragment>
+                        ))}
                     </div>
                 </div>
 

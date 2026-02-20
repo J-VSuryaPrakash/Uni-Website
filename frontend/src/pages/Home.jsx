@@ -10,9 +10,6 @@ import {
     Briefcase,
     Activity,
     FileText,
-    MapPin,
-    Phone,
-    Mail
 } from 'lucide-react';
 import aicte from '../assets/aicte.svg'
 import apsche from '../assets/apsche.svg'
@@ -23,50 +20,52 @@ import ugc from '../assets/UGC.svg'
 import Samadhaan from '../assets/Samadhaan.svg'
 import { Link } from 'react-router-dom';
 import vc from '../assets/vc.jpg'
+import { useNotifications } from '../hooks/useNotifications';
+import { useEvents } from '../hooks/useEvents';
+import { TableSkeleton } from '../components/common/Skeleton';
+
+const NOTIFICATION_TABS = [
+    { label: 'Notifications and Circulars', key: 'notifications' },
+    { label: 'Sports', key: 'sports' },
+    { label: 'Workshops & Conferences', key: 'workshops' },
+    { label: 'Examination Section', key: 'examination' },
+    { label: 'Tenders', key: 'tenders' },
+];
+
 const Home = () => {
     const [activeTab, setActiveTab] = useState('notifications');
 
-    // Dummy data for notifications
-    const notifications = [
-        { id: 1, date: '22-12-2025', desc: 'Ph.D. Registration Status - Cancellation Notice', dept: 'Director - Academics' },
-        { id: 2, date: '16-12-2025', desc: 'The Andhra Pradesh Public Employment Order, 2025', dept: 'Registrar' },
-        { id: 3, date: '08-12-2025', desc: 'R23 Regulations and Circular', dept: 'Registrar' },
-        { id: 4, date: '04-12-2025', desc: 'JNTUK - Affiliated Colleges - Furnishing of info', dept: 'Registrar' },
-        { id: 5, date: '03-12-2025', desc: 'JNTUK - D Academics - Notification - RRMs', dept: 'Director - Academics' },
-    ];
+    // Fetch notifications by active tab (category)
+    const { data: notifications, isLoading: notifLoading } = useNotifications(activeTab);
+
+    // Fetch events for happenings
+    const { data: events } = useEvents();
+    const happenings = events || [];
 
     const [currentHappening, setCurrentHappening] = useState(0);
 
-    const happenings = [
-        {
-            id: 1,
-            title: "79th Independence Day",
-            desc: "Celebrations at JNTUK Kakinada - 2025. The Vice Chancellor hoisted the national flag and addressed the gathering.",
-            image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1000&auto=format&fit=crop",
-            date: "15 Aug 2025"
-        },
-        {
-            id: 2,
-            title: "International Conference on AI",
-            desc: "A 3-day conference on Artificial Intelligence and Machine Learning featuring global experts.",
-            image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1000&auto=format&fit=crop",
-            date: "10 Sep 2025"
-        },
-        {
-            id: 3,
-            title: "Tech Fest 2025",
-            desc: "Annual technical symposium of JNTUK demonstrating student innovations and projects.",
-            image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop",
-            date: "05 Oct 2025"
-        },
-    ];
-
     const nextHappening = () => {
+        if (happenings.length === 0) return;
         setCurrentHappening((prev) => (prev === happenings.length - 1 ? 0 : prev + 1));
     };
 
     const prevHappening = () => {
+        if (happenings.length === 0) return;
         setCurrentHappening((prev) => (prev === 0 ? happenings.length - 1 : prev - 1));
+    };
+
+    // Get event image URL from media relations
+    const getEventImage = (event) => {
+        if (event.media && event.media.length > 0 && event.media[0].media) {
+            return event.media[0].media.url;
+        }
+        return 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000&auto=format&fit=crop';
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     };
 
     const portals = [
@@ -78,12 +77,14 @@ const Home = () => {
         { label: "AICTE", icon: <Award className="w-8 h-8 text-orange-600" />, color: "bg-orange-50" },
     ];
 
+    // Safe current happening index
+    const safeIndex = happenings.length > 0 ? currentHappening % happenings.length : 0;
+
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
 
             {/* HERO SECTION */}
             <section className="relative h-[85vh] w-full overflow-hidden">
-                {/* Background Image Placeholder - Replace with actual JNTUK building image */}
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 hover:scale-105"
                     style={{ backgroundImage: 'url("https://www.jntuk.edu.in/assets/img/jntukmainhomebg.png")' }}
@@ -93,18 +94,10 @@ const Home = () => {
 
                 <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
                     <div className="max-w-2xl animate-fade-in-up">
-                        {/* <h2 className="text-2xl md:text-3xl text-gray-600 font-medium tracking-wide mb-2">Welcome to</h2>
-                        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 drop-shadow-sm">
-                            JNTUK <span className="text-blue-900">Kakinada</span>
-                        </h1> */}
-                        {/* <p className="text-lg md:text-xl text-gray-700 leading-relaxed font-light border-l-4 border-yellow-500 pl-4">
-                            The gateway to excellence and innovation in <span className="font-semibold text-blue-800">engineering</span>, where tradition meets modernity.
-                        </p> */}
-
-                        {/* Buttons Removed as per request */}
                     </div>
                 </div>
             </section>
+
             {/* About JNTUK Section */}
             <section className="py-8 bg-white relative">
                 <div className="max-w-7xl mx-auto px-6">
@@ -149,7 +142,6 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            {/* TICKER MOVED TO APP HEADER */}
 
             {/* NOTIFICATION CENTER */}
             <section className="py-16 px-4 bg-white">
@@ -165,53 +157,64 @@ const Home = () => {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        {/* TABS & TABLE (Left Side) */}
                         <div className="lg:col-span-12 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
                             {/* TAB HEADERS */}
                             <div className="flex border-b border-gray-100 overflow-x-auto">
-                                {['Notifications and Circulars', 'Sports', 'Workshops & Conferences', 'Examination Section', 'Tenders'].map((tab) => (
+                                {NOTIFICATION_TABS.map((tab) => (
                                     <button
-                                        key={tab}
-                                        onClick={() => setActiveTab(tab.toLowerCase())}
-                                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.toLowerCase() || (activeTab === 'notifications' && tab.startsWith('Noti'))
+                                        key={tab.key}
+                                        onClick={() => setActiveTab(tab.key)}
+                                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.key
                                             ? 'border-blue-600 text-blue-600 bg-blue-50/50'
                                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                             }`}
                                     >
-                                        {tab}
+                                        {tab.label}
                                     </button>
                                 ))}
                             </div>
 
                             {/* TABLE CONTENT */}
                             <div className="overflow-x-auto">
-                                <table className="w-full text-sm text-left">
-                                    <thead className="bg-gray-50 text-gray-600 font-semibold uppercase text-xs">
-                                        <tr>
-                                            <th className="px-6 py-4 rounded-tl-lg">S.No</th>
-                                            <th className="px-6 py-4">Date</th>
-                                            <th className="px-6 py-4 w-1/2">Notification</th>
-                                            <th className="px-6 py-4 rounded-tr-lg">Department</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100">
-                                        {notifications.map((item) => (
-                                            <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
-                                                <td className="px-6 py-4 text-gray-500 font-medium">{item.id}.</td>
-                                                <td className="px-6 py-4 text-blue-600 font-medium">{item.date}</td>
-                                                <td className="px-6 py-4 text-gray-800 font-medium group-hover:text-blue-700 transition-colors cursor-pointer">
-                                                    {item.desc}
-                                                    {item.id <= 2 && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800 animate-pulse">NEW</span>}
-                                                </td>
-                                                <td className="px-6 py-4 text-gray-500">{item.dept}</td>
+                                {notifLoading ? (
+                                    <TableSkeleton rows={5} />
+                                ) : notifications && notifications.length > 0 ? (
+                                    <table className="w-full text-sm text-left">
+                                        <thead className="bg-gray-50 text-gray-600 font-semibold uppercase text-xs">
+                                            <tr>
+                                                <th className="px-6 py-4 rounded-tl-lg">S.No</th>
+                                                <th className="px-6 py-4">Date</th>
+                                                <th className="px-6 py-4 w-1/2">Notification</th>
+                                                <th className="px-6 py-4 rounded-tr-lg">Department</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {notifications.map((item, index) => (
+                                                <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
+                                                    <td className="px-6 py-4 text-gray-500 font-medium">{index + 1}.</td>
+                                                    <td className="px-6 py-4 text-blue-600 font-medium">
+                                                        {formatDate(item.createdAt)}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-gray-800 font-medium group-hover:text-blue-700 transition-colors cursor-pointer">
+                                                        {item.title}
+                                                        {index < 2 && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800 animate-pulse">NEW</span>}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-gray-500">
+                                                        {item.department?.name || '-'}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="p-8 text-center text-gray-400">
+                                        No notifications found for this category.
+                                    </div>
+                                )}
                             </div>
                             <div className="p-4 bg-gray-50 flex justify-center md:hidden">
-                                <Link to="/happenings" className="text-sm font-semibold text-blue-600">View All Notifications</Link>
+                                <Link to="/notifications" className="text-sm font-semibold text-blue-600">View All Notifications</Link>
                             </div>
                         </div>
                     </div>
@@ -219,82 +222,86 @@ const Home = () => {
             </section>
 
             {/* HAPPENINGS SECTION */}
-            <section className="py-20 bg-blue-900 text-white overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-800/50 skew-x-12 transform translate-x-20"></div>
+            {happenings.length > 0 && (
+                <section className="py-20 bg-blue-900 text-white overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-800/50 skew-x-12 transform translate-x-20"></div>
 
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="max-w-7xl mx-auto px-6 relative z-10">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-                        <div className="space-y-8">
-                            <div>
-                                <h3 className="text-blue-300 font-bold tracking-wider uppercase text-sm mb-2">Campus Life</h3>
-                                <h2 className="text-4xl md:text-5xl font-bold leading-tight">JNTUK <br /> Happenings.</h2>
-                            </div>
-
-                            <div className="prose prose-lg prose-invert text-blue-100/80">
-                                <p>
-                                    Dive into the vibrant world of JNTUK. Experience real-time updates on events, achievements, and campus life, offering a comprehensive glimpse into the dynamic spirit of our community.
-                                </p>
-                            </div>
-
-                            <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/10 max-w-md">
-                                <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                                    <Award className="text-white w-6 h-6" />
-                                </div>
+                            <div className="space-y-8">
                                 <div>
-                                    <h4 className="font-bold text-white">A place where you can achieve</h4>
-                                    <p className="text-blue-200 text-xs">Education encompasses both teaching and learning of knowledge.</p>
+                                    <h3 className="text-blue-300 font-bold tracking-wider uppercase text-sm mb-2">Campus Life</h3>
+                                    <h2 className="text-4xl md:text-5xl font-bold leading-tight">JNTUK <br /> Happenings.</h2>
                                 </div>
-                            </div>
 
-                            <Link to="/happenings" className="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-yellow-400 transition-colors shadow-lg">
-                                View All Happenings
-                            </Link>
-                        </div>
+                                <div className="prose prose-lg prose-invert text-blue-100/80">
+                                    <p>
+                                        Dive into the vibrant world of JNTUK. Experience real-time updates on events, achievements, and campus life, offering a comprehensive glimpse into the dynamic spirit of our community.
+                                    </p>
+                                </div>
 
-                        {/* CAROUSEL PLACEHOLDER */}
-                        <div className="relative">
-                            <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 relative group">
-                                <img
-                                    src={happenings[currentHappening].image}
-                                    alt="Happenings"
-                                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">LATEST EVENT</span>
-                                        <span className="text-white/80 text-sm font-medium flex items-center gap-1">
-                                            <Calendar className="w-4 h-4" />
-                                            {happenings[currentHappening].date}
-                                        </span>
+                                <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/10 max-w-md">
+                                    <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shrink-0">
+                                        <Award className="text-white w-6 h-6" />
                                     </div>
-                                    <h3 className="text-2xl font-bold text-white mb-2">{happenings[currentHappening].title}</h3>
-                                    <p className="text-gray-300 line-clamp-2">{happenings[currentHappening].desc}</p>
+                                    <div>
+                                        <h4 className="font-bold text-white">A place where you can achieve</h4>
+                                        <p className="text-blue-200 text-xs">Education encompasses both teaching and learning of knowledge.</p>
+                                    </div>
+                                </div>
+
+                                <Link to="/happenings" className="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-yellow-400 transition-colors shadow-lg">
+                                    View All Happenings
+                                </Link>
+                            </div>
+
+                            {/* CAROUSEL */}
+                            <div className="relative">
+                                <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 relative group">
+                                    <img
+                                        src={getEventImage(happenings[safeIndex])}
+                                        alt={happenings[safeIndex].title}
+                                        className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-8">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <span className="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">LATEST EVENT</span>
+                                            {happenings[safeIndex].eventDate && (
+                                                <span className="text-white/80 text-sm font-medium flex items-center gap-1">
+                                                    <Calendar className="w-4 h-4" />
+                                                    {formatDate(happenings[safeIndex].eventDate)}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-white mb-2">{happenings[safeIndex].title}</h3>
+                                        <p className="text-gray-300 line-clamp-2">{happenings[safeIndex].description}</p>
+                                    </div>
+                                </div>
+
+                                {/* Navigation Buttons */}
+                                <div className="absolute -bottom-6 right-8 flex gap-2">
+                                    <button
+                                        onClick={prevHappening}
+                                        className="w-12 h-12 bg-white rounded-full text-blue-900 flex items-center justify-center shadow-lg hover:bg-yellow-400 transition-colors z-20 cursor-pointer"
+                                        aria-label="Previous Slide"
+                                    >
+                                        &larr;
+                                    </button>
+                                    <button
+                                        onClick={nextHappening}
+                                        className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-500 transition-colors z-20 cursor-pointer"
+                                        aria-label="Next Slide"
+                                    >
+                                        &rarr;
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* Navigation Buttons */}
-                            <div className="absolute -bottom-6 right-8 flex gap-2">
-                                <button
-                                    onClick={prevHappening}
-                                    className="w-12 h-12 bg-white rounded-full text-blue-900 flex items-center justify-center shadow-lg hover:bg-yellow-400 transition-colors z-20 cursor-pointer"
-                                    aria-label="Previous Slide"
-                                >
-                                    ←
-                                </button>
-                                <button
-                                    onClick={nextHappening}
-                                    className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-500 transition-colors z-20 cursor-pointer"
-                                    aria-label="Next Slide"
-                                >
-                                    →
-                                </button>
-                            </div>
                         </div>
-
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* JNTUK SITES GRID */}
             <section className="py-12 bg-gradient-to-b from-white to-blue-50/30">
@@ -311,17 +318,13 @@ const Home = () => {
                                 href="#"
                                 className="group relative bg-white p-5 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_25px_rgb(0,0,0,0.06)] transition-all duration-500 flex flex-col items-center justify-center text-center gap-3 border border-gray-50 hover:border-blue-100 hover:-translate-y-1 overflow-hidden"
                             >
-                                {/* Background Decoration */}
                                 <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full ${portal.color} opacity-20 blur-xl group-hover:scale-150 transition-transform duration-700`}></div>
-                                {/* Icon Container */}
                                 <div className={`relative w-16 h-16 rounded-full ${portal.color} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm ring-2 ring-white`}>
                                     {portal.icon}
                                 </div>
-                                {/* Label */}
                                 <h3 className="font-bold text-sm text-gray-700 group-hover:text-blue-700 transition-colors w-full px-1 relative z-10 leading-tight">
                                     {portal.label}
                                 </h3>
-                                {/* Hover Indicator */}
                                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-yellow-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                             </a>
                         ))}
@@ -338,7 +341,7 @@ const Home = () => {
                         <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-yellow-400 mx-auto mt-4 rounded-full opacity-80"></div>
                     </div>
 
-                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-80  hover:grayscale-0 transition-all duration-500">
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-80 hover:grayscale-0 transition-all duration-500">
                         <img src={aicte} alt="AICTE" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="All India Council for Technical Education" />
                         <img src={ugc} alt="UGC" className="h-14 md:h-16 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="University Grants Commission" />
                         <img src={nirf} alt="NIRF" className="h-12 md:h-14 object-contain hover:scale-110 transition-transform duration-300 filter drop-shadow-sm" title="National Institutional Ranking Framework" />
