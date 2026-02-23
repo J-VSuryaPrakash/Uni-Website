@@ -32,7 +32,7 @@ const SidebarLayout = ({ title, menuItems, children }) => {
                 {/* Mobile Backdrop */}
                 {isSidebarOpen && (
                     <div
-                        className="fixed inset-0 bg-black/50 z-[60] lg:hidden backdrop-blur-sm transition-opacity"
+                        className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
                         onClick={() => setIsSidebarOpen(false)}
                     ></div>
                 )}
@@ -40,7 +40,7 @@ const SidebarLayout = ({ title, menuItems, children }) => {
                 {/* Left Sidebar */}
                 <aside
                     className={`
-                        fixed inset-y-0 left-0 z-[70] w-3/4 max-w-xs bg-white shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-1/4 lg:shadow-none lg:bg-transparent
+                        fixed inset-y-0 left-0 z-40 w-3/4 max-w-xs bg-white shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto lg:w-1/4 lg:shadow-none lg:bg-transparent
                         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
                     `}
                 >

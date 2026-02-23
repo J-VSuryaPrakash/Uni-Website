@@ -35,7 +35,7 @@ const App = () => {
 
 			{/* Toast notifications */}
 			<Toaster
-				position="top-right"
+				position="bottom-right"
 				// richColors
 				// closeButton
 				expand={false}

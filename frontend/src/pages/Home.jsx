@@ -135,7 +135,7 @@ const Home = () => {
                                     The University and colleges are governed by the rules and guidelines provided by the Higher Education Department of AP and AP State Council for Higher Education from time to time. JNTUK has produced highly professional and competitive engineers by infusing greater quality and content into the curriculum and educating students with appropriate skills suitable for a rapidly challenging industrial scenario.
                                 </p>
                             </div>
-                            <Link to="/about" className="inline-flex items-center text-blue-700 font-semibold hover:text-blue-900 transition-colors text-sm group">
+                            <Link to="/about-jntuk" className="inline-flex items-center text-blue-700 font-semibold hover:text-blue-900 transition-colors text-sm group">
                                 Read More History <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
