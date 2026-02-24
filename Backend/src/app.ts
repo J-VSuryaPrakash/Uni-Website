@@ -2,6 +2,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import path from "path";
+import { fileURLToPath } from "url";
 import { errorMiddleware } from "./middlewares/error.middleware";
 
 // ============================
@@ -52,15 +54,21 @@ import {
 import eventMediaRoutes from "./modules/eventMedia/eventMedia.route";
 import mediaRoutes from "./modules/media/media.route";
 
+// File Upload Route
+import uploadRoutes from "./modules/upload/upload.route";
+
 // ============================
 // App Initialization
 // ============================
 const app = express();
 
+// Resolve __dirname in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // ============================
 // Middleware Configuration
 // ============================
-// app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(
 	cors({
 		origin: [
@@ -73,8 +81,19 @@ app.use(
 );
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies from request headers
-app.use(helmet()); // Security headers middleware
+app.use(helmet({
+	// Allow cross-origin for uploaded static files (images, PDFs served inline)
+	crossOriginResourcePolicy: { policy: "cross-origin" },
+})); // Security headers middleware
 app.use(errorMiddleware); // Global error handling middleware
+
+// ============================
+// Static File Serving
+// Serve uploaded files at /uploads/*
+// e.g. GET /uploads/notifications/file.pdf
+// ============================
+const uploadsDir = path.join(__dirname, "../uploads");
+app.use("/uploads", express.static(uploadsDir));
 
 // ============================
 // API Routes - Version 1
@@ -85,6 +104,12 @@ app.use(errorMiddleware); // Global error handling middleware
 // Handles admin login, logout, and session management
 // --------------------------------------------------
 app.use("/api/v1/admin", adminRoutes);
+
+// --------------------------------------------------
+// File Upload Routes
+// Admin: Upload files to disk, create Media records
+// --------------------------------------------------
+app.use("/api/v1/admin/upload", uploadRoutes);
 
 // --------------------------------------------------
 // Menu Routes

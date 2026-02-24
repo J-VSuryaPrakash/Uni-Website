@@ -33,16 +33,12 @@ export class NotificationService {
             },
             include:{
                 department: true,
-                attachments: true
+                attachments: { include: { media: true } }
             },
             orderBy: {
                 priority: 'asc'
             }
         });
-
-        if (!notifications || notifications.length === 0) {
-            throw new ApiError(404, 'No notifications found for this category');
-        }
 
         return notifications;
     }
@@ -52,16 +48,12 @@ export class NotificationService {
         const notifications = await prisma.notification.findMany({
             include:{
                 department: true,
-                attachments: true
+                attachments: { include: { media: true } }
             },
             orderBy: {
                 priority: 'asc'
             }
         });
-
-        if (!notifications || notifications.length === 0) {
-            throw new ApiError(404, 'No notifications found');
-        }
 
         return notifications;
     }

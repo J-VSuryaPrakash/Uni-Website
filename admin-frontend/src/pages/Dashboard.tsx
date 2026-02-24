@@ -1,5 +1,7 @@
 import {
+	Bell,
 	Blocks,
+	Building2,
 	LayoutGrid,
 	LogOut,
 	Menu,
@@ -17,6 +19,8 @@ const navItems = [
 	{ label: "Pages", to: "/pages", icon: PanelsTopLeft },
 	{ label: "Page Sections", to: "/page-sections", icon: Shapes },
 	{ label: "Content Blocks", to: "/content-blocks", icon: Blocks },
+	{ label: "Notifications", to: "/notifications", icon: Bell },
+	{ label: "Departments", to: "/departments", icon: Building2 },
 ];
 
 export default function Dashboard() {

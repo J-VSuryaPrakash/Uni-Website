@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar/Navbar.jsx";
 import Home from "./pages/Home.jsx";
 import DynamicPage from "./pages/DynamicPage.jsx";
 import Contact from "./pages/Contact.jsx";
+import NotificationsPage from "./pages/NotificationsPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Breadcrumbs from "./components/Breadcrumbs/Breadcrumbs.jsx";
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/*" element={<DynamicPage />} />
       </Routes>
       <Footer />
