@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, ChevronLeft, FileText, Paperclip, Search, X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { useNotifications } from '../hooks/useNotifications';
 
 // ─── Backend origin (strips /api/v1 from the API base URL) ────────────────────
@@ -109,6 +110,7 @@ const NotificationsPage = () => {
     // null | single attachment object
     const [viewerAttachment, setViewerAttachment] = useState(null);
 
+    const location = useLocation();
     const { data: notifications, isLoading, isError } = useNotifications(activeTab);
 
     const filtered = React.useMemo(() => {
@@ -121,6 +123,18 @@ const NotificationsPage = () => {
                 (n.department?.name ?? '').toLowerCase().includes(q),
         );
     }, [notifications, search]);
+
+    // Scroll to a specific notification row when navigated via hash link
+    useEffect(() => {
+        if (isLoading || !location.hash) return;
+        const id = location.hash.slice(1);
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('!bg-yellow-50');
+        const timer = setTimeout(() => el.classList.remove('!bg-yellow-50'), 2500);
+        return () => clearTimeout(timer);
+    }, [isLoading, filtered, location.hash]);
 
     const openAttachments = (item) => {
         setViewerAttachment(null);
@@ -251,6 +265,7 @@ const NotificationsPage = () => {
                                         return (
                                             <tr
                                                 key={item.id}
+                                                id={`notif-${item.id}`}
                                                 className="hover:bg-blue-50/30 transition-colors group"
                                             >
                                                 {/* S.No */}

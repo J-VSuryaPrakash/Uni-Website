@@ -25,6 +25,7 @@ import { useEvents } from '../hooks/useEvents';
 import { TableSkeleton } from '../components/common/Skeleton';
 
 const NOTIFICATION_TABS = [
+    { label: 'All', key: 'all' },
     { label: 'Notifications and Circulars', key: 'notifications' },
     { label: 'Sports', key: 'sports' },
     { label: 'Workshops & Conferences', key: 'workshops' },
@@ -186,6 +187,7 @@ const Home = () => {
                                                 <th className="px-6 py-4 rounded-tl-lg">S.No</th>
                                                 <th className="px-6 py-4">Date</th>
                                                 <th className="px-6 py-4 w-1/2">Notification</th>
+                                                {activeTab === 'all' && <th className="px-6 py-4">Category</th>}
                                                 <th className="px-6 py-4 rounded-tr-lg">Department</th>
                                             </tr>
                                         </thead>
@@ -196,10 +198,22 @@ const Home = () => {
                                                     <td className="px-6 py-4 text-blue-600 font-medium">
                                                         {formatDate(item.createdAt)}
                                                     </td>
-                                                    <td className="px-6 py-4 text-gray-800 font-medium group-hover:text-blue-700 transition-colors cursor-pointer">
-                                                        {item.title}
+                                                    <td className="px-6 py-4">
+                                                        <Link
+                                                            to={`/notifications#notif-${item.id}`}
+                                                            className="text-gray-800 font-medium group-hover:text-blue-700 transition-colors hover:underline"
+                                                        >
+                                                            {item.title}
+                                                        </Link>
                                                         {index < 2 && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800 animate-pulse">NEW</span>}
                                                     </td>
+                                                    {activeTab === 'all' && (
+                                                        <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">
+                                                            {item.category
+                                                                ? NOTIFICATION_TABS.find((t) => t.key === item.category)?.label ?? item.category
+                                                                : <span className="text-gray-300">—</span>}
+                                                        </td>
+                                                    )}
                                                     <td className="px-6 py-4 text-gray-500">
                                                         {item.department?.name || '-'}
                                                     </td>
