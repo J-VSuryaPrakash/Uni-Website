@@ -22,6 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { BlockType, ContentBlock } from "@/types/ContentBlocks.types";
 import type { PageSection } from "@/types/PageSection.types";
+import MembersBlockEditor from "./MembersBlockEditor";
 import type { BlockFormState } from "./types";
 
 interface ContentBlockFormDialogProps {
@@ -49,8 +50,8 @@ export default function ContentBlockFormDialog({
 }: ContentBlockFormDialogProps) {
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-150 bg-white">
-				<DialogHeader>
+			<DialogContent className={`bg-white flex flex-col max-h-[90vh] ${formState.blockType === "members" ? "sm:max-w-2xl" : "sm:max-w-150"}`}>
+				<DialogHeader className="shrink-0">
 					<DialogTitle>
 						{editingBlock ? "Edit Block" : "Create Block"}
 					</DialogTitle>
@@ -61,7 +62,8 @@ export default function ContentBlockFormDialog({
 					</DialogDescription>
 				</DialogHeader>
 
-				<form onSubmit={onSubmit} className="grid gap-6 py-4">
+				<form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0">
+				<div className="flex-1 overflow-y-auto px-1 py-4 grid gap-6 content-start">
 					<div className="grid gap-3">
 						<Label htmlFor="blockType">Block Type</Label>
 						<Select
@@ -79,7 +81,7 @@ export default function ContentBlockFormDialog({
 							<SelectContent>
 								{blockTypeOptions.map((type) => (
 									<SelectItem key={type} value={type}>
-										{type.toUpperCase()}
+										{type === "members" ? "Members List" : type.toUpperCase()}
 									</SelectItem>
 								))}
 							</SelectContent>
@@ -212,7 +214,24 @@ export default function ContentBlockFormDialog({
 						</div>
 					) : null}
 
-					<DialogFooter>
+					{formState.blockType === "members" ? (
+						<div className="grid gap-3">
+							<Label>Members</Label>
+							<MembersBlockEditor
+								members={formState.membersValue}
+								onChange={(members) =>
+									setFormState((prev) => ({
+										...prev,
+										membersValue: members,
+									}))
+								}
+							/>
+						</div>
+					) : null}
+
+				</div>
+
+				<DialogFooter className="shrink-0 border-t border-slate-100 pt-4 mt-0">
 						<Button
 							type="button"
 							variant="outline"

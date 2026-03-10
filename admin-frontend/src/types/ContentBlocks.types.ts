@@ -1,6 +1,6 @@
 import type { BaseEntity } from "./Common.types";
 
-export type BlockType = "text" | "image" | "list" | "html";
+export type BlockType = "text" | "image" | "list" | "html" | "members";
 
 export interface ContentBlock extends BaseEntity {
 	sectionId: number;

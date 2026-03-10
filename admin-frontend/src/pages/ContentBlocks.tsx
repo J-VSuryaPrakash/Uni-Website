@@ -53,6 +53,7 @@ export default function ContentBlocks() {
 		imageAlt: "",
 		htmlValue: "",
 		listItems: "",
+		membersValue: [],
 	});
 
 	useEffect(() => {
@@ -101,6 +102,17 @@ export default function ContentBlocks() {
 		const listItems = Array.isArray(content.items)
 			? content.items.filter((item) => typeof item === "string")
 			: [];
+		const membersValue = Array.isArray(content.members)
+			? content.members.map((m: any) => ({
+					name: m.name ?? "",
+					role: m.role ?? "Member",
+					photo: m.photo ?? "",
+					designation: m.designation ?? "",
+					department: m.department ?? "",
+					email: m.email ?? "",
+					phone: m.phone ?? "",
+				}))
+			: [];
 
 		return {
 			blockType: block?.blockType ?? "text",
@@ -116,6 +128,7 @@ export default function ContentBlocks() {
 			imageAlt: typeof content.alt === "string" ? content.alt : "",
 			htmlValue: typeof content.html === "string" ? content.html : "",
 			listItems: listItems.join("\n"),
+			membersValue,
 		};
 	};
 
@@ -190,6 +203,18 @@ export default function ContentBlocks() {
 					return null;
 				}
 				return { html };
+			}
+			case "members": {
+				if (formState.membersValue.length === 0) {
+					toast.error("Add at least one member");
+					return null;
+				}
+				const invalid = formState.membersValue.find((m) => !m.name.trim());
+				if (invalid) {
+					toast.error("Each member must have a name");
+					return null;
+				}
+				return { members: formState.membersValue };
 			}
 			default:
 				return {};
