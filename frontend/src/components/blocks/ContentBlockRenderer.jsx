@@ -23,7 +23,7 @@ const TextBlock = ({ content }) => (
 const ImageBlock = ({ content }) => (
     <figure className="my-4">
         <img
-            src={content.url || content.imageUrl}
+            src={resolveUrl(content.url || content.imageUrl)}
             alt={content.alt || content.caption || ''}
             className="w-full max-w-2xl rounded-lg shadow-sm border border-gray-100"
             loading="lazy"

@@ -20,7 +20,7 @@ export default function Login() {
 			{ email, password },
 			{
 				onSuccess: () => {
-					navigate("/menu");
+					navigate("/");
 				},
 				onError: (error: any) => {
 					// ADD THIS TO SEE THE ACTUAL ERROR IN CONSOLE

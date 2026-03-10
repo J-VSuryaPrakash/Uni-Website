@@ -1,15 +1,15 @@
 import { Toaster } from "@/components/ui/sonner";
-import ContentBlocks from "@/pages/ContentBlocks";
 import Dashboard from "./pages/Dashboard";
 import DashboardHome from "./pages/DashboardHome";
 import Departments from "@/pages/Departments";
 import Designations from "@/pages/Designations";
 import Directorates from "@/pages/Directorates";
 import Login from "@/pages/Login";
-import Menu from "@/pages/Menu";
 import Notifications from "@/pages/Notifications";
-import Pages from "@/pages/Pages";
-import PageSections from "@/pages/PageSections";
+import ContentHub from "@/pages/content";
+import MenuPages from "@/pages/content/MenuPages";
+import PageSectionsList from "@/pages/content/PageSectionsList";
+import SectionBlocks from "@/pages/content/SectionBlocks";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/common/ProtectedRoutes";
 
@@ -28,25 +28,29 @@ const App = () => {
 					}
 				>
 					<Route index element={<DashboardHome />} />
-					<Route path="menu" element={<Menu />} />
-					<Route path="pages" element={<Pages />} />
-					<Route path="page-sections" element={<PageSections />} />
-					<Route path="content-blocks" element={<ContentBlocks />} />
+
+					{/* Unified content management hierarchy */}
+					<Route path="content" element={<ContentHub />} />
+					<Route path="content/:menuId" element={<MenuPages />} />
+					<Route
+						path="content/:menuId/:pageId"
+						element={<PageSectionsList />}
+					/>
+					<Route
+						path="content/:menuId/:pageId/:sectionId"
+						element={<SectionBlocks />}
+					/>
+
 					<Route path="notifications" element={<Notifications />} />
 					<Route path="departments" element={<Departments />} />
-				<Route path="designations" element={<Designations />} />
-				<Route path="directorates" element={<Directorates />} />
+					<Route path="designations" element={<Designations />} />
+					<Route path="directorates" element={<Directorates />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/login" replace />} />
 			</Routes>
 
-			{/* Toast notifications */}
-			<Toaster
-				position="bottom-right"
-				expand={false}
-				duration={3000}
-			/>
+			<Toaster position="bottom-right" expand={false} duration={3000} />
 		</BrowserRouter>
 	);
 };
