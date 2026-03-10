@@ -78,7 +78,7 @@ const DynamicPage = () => {
                 {/* Faculty / Directorates linked to this page */}
                 {page.directorates && page.directorates.length > 0 && (
                     <div className="mt-10 pt-6 border-t border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-800 mb-6">Faculty / Administration</h2>
+                        {/* <h2 className="text-xl font-bold text-gray-800 mb-6">Faculty / Administration</h2> */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {page.directorates.map(({ directorate }) => (
                                 <FacultyCard key={directorate.id} directorate={directorate} />
