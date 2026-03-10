@@ -26,6 +26,8 @@ const BLOCK_TYPE_LABELS: Record<string, string> = {
 	list: "List",
 	html: "HTML",
 	members: "Members",
+	table: "Table",
+	pdf: "PDF",
 };
 
 function formatContentPreview(block: ContentBlock): string {
@@ -51,6 +53,17 @@ function formatContentPreview(block: ContentBlock): string {
 			return Array.isArray(c.members)
 				? `${c.members.length} member${c.members.length !== 1 ? "s" : ""}`
 				: "";
+		case "table": {
+			const cols = Array.isArray(c.headers) ? c.headers.length : 0;
+			const rowCount = Array.isArray(c.rows) ? c.rows.length : 0;
+			return `${cols} col${cols !== 1 ? "s" : ""}, ${rowCount} row${rowCount !== 1 ? "s" : ""}`;
+		}
+		case "pdf":
+			return typeof c.title === "string"
+				? c.title
+				: typeof c.url === "string"
+					? c.url.split("/").pop() ?? ""
+					: "";
 		default:
 			return "";
 	}
@@ -105,6 +118,11 @@ export default function SectionBlocks() {
 		htmlValue: "",
 		listItems: "",
 		membersValue: [],
+		tableHeaders: [],
+		tableRows: [],
+		tableHeading: "",
+		pdfUrl: "",
+		pdfTitle: "",
 	});
 
 	const sortedBlocks = useMemo(() => {
@@ -138,21 +156,43 @@ export default function SectionBlocks() {
 					phone: m.phone ?? "",
 				}))
 			: [];
+		const tableHeaders = Array.isArray(c.headers)
+			? c.headers.map((h: any) => String(h))
+			: [];
+		const tableRows = Array.isArray(c.rows)
+			? c.rows.map((row: any) =>
+					Array.isArray(row)
+						? row.map((cell: any) => String(cell))
+						: Object.values(row).map((cell: any) => String(cell)),
+				)
+			: [];
+		const pdfUrl =
+			block?.blockType === "pdf" && typeof c.url === "string"
+				? c.url
+				: "";
 		return {
 			blockType: block?.blockType ?? "text",
 			position: block?.position ?? (blocks?.length ?? 0),
 			isVisible: block?.isVisible ?? true,
 			textValue: typeof c.text === "string" ? c.text : "",
 			imageUrl:
-				typeof c.url === "string"
-					? c.url
-					: typeof c.src === "string"
-						? c.src
-						: "",
+				block?.blockType !== "pdf"
+					? typeof c.url === "string"
+						? c.url
+						: typeof c.src === "string"
+							? c.src
+							: ""
+					: "",
 			imageAlt: typeof c.alt === "string" ? c.alt : "",
 			htmlValue: typeof c.html === "string" ? c.html : "",
 			listItems: listItems.join("\n"),
 			membersValue,
+			tableHeaders,
+			tableRows,
+			tableHeading:
+				typeof c.heading === "string" ? c.heading : "",
+			pdfUrl,
+			pdfTitle: typeof c.title === "string" ? c.title : "",
 		};
 	};
 
@@ -207,6 +247,39 @@ export default function SectionBlocks() {
 					return null;
 				}
 				return { members: formState.membersValue };
+			}
+			case "table": {
+				if (formState.tableHeaders.length === 0) {
+					toast.error("Add at least one column");
+					return null;
+				}
+				const emptyHeader = formState.tableHeaders.find(
+					(h) => !h.trim(),
+				);
+				if (emptyHeader !== undefined) {
+					toast.error("All column names must be filled");
+					return null;
+				}
+				const result: Record<string, any> = {
+					headers: formState.tableHeaders,
+					rows: formState.tableRows,
+				};
+				if (formState.tableHeading.trim()) {
+					result.heading = formState.tableHeading.trim();
+				}
+				return result;
+			}
+			case "pdf": {
+				const url = formState.pdfUrl.trim();
+				if (!url) {
+					toast.error("PDF file or URL is required");
+					return null;
+				}
+				const result: Record<string, any> = { url };
+				if (formState.pdfTitle.trim()) {
+					result.title = formState.pdfTitle.trim();
+				}
+				return result;
 			}
 			default:
 				return {};

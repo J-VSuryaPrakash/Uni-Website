@@ -95,32 +95,38 @@ const TableBlock = ({ content }) => {
     );
 };
 
-const PdfBlock = ({ content }) => (
-    <div className="my-4">
-        {content.heading && (
-            <h3 className="text-lg font-bold text-gray-800 mb-2">{content.heading}</h3>
-        )}
-        {content.embed ? (
+const PdfBlock = ({ content }) => {
+    const pdfUrl = resolveUrl(content.url);
+
+    return (
+        <div className="my-4">
+            {(content.heading || content.title) && (
+                <h3 className="text-lg font-bold text-gray-800 mb-3">
+                    {content.heading || content.title}
+                </h3>
+            )}
             <iframe
-                src={content.url}
+                src={pdfUrl}
                 title={content.title || content.heading || 'PDF Document'}
-                className="w-full h-[600px] rounded-lg border border-gray-200"
+                className="w-full h-[700px] rounded-lg border border-gray-200"
             />
-        ) : (
-            <a
-                href={content.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium"
-            >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                {content.title || 'Download PDF'}
-            </a>
-        )}
-    </div>
-);
+            <div className="mt-3">
+                <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm"
+                >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    {content.title ? `Download ${content.title}` : 'Download PDF'}
+                </a>
+            </div>
+        </div>
+    );
+};
 
 const MembersBlock = ({ content }) => {
     const members = Array.isArray(content.members) ? content.members : [];

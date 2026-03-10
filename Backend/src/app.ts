@@ -85,6 +85,17 @@ app.use(cookieParser()); // Parse cookies from request headers
 app.use(helmet({
 	// Allow cross-origin for uploaded static files (images, PDFs served inline)
 	crossOriginResourcePolicy: { policy: "cross-origin" },
+	contentSecurityPolicy: {
+		directives: {
+			...helmet.contentSecurityPolicy.getDefaultDirectives(),
+			"frame-ancestors": [
+				"'self'",
+				"http://localhost:5173",
+				"http://localhost:5174",
+				...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
+			],
+		},
+	},
 })); // Security headers middleware
 app.use(errorMiddleware); // Global error handling middleware
 

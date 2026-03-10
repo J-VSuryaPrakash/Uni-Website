@@ -2,7 +2,7 @@ import apiClient from "./axios";
 import type { ApiResponse } from "../types/ApiResponce.types";
 import type { Media } from "../types/Notification.types";
 
-export type UploadFolder = "notifications" | "faculty" | "events" | "general";
+export type UploadFolder = "notifications" | "faculty" | "events" | "general" | "pdf";
 
 export interface UploadedMedia extends Media {
 	originalName: string;

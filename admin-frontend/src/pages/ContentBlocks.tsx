@@ -54,6 +54,11 @@ export default function ContentBlocks() {
 		htmlValue: "",
 		listItems: "",
 		membersValue: [],
+		tableHeaders: [],
+		tableRows: [],
+		tableHeading: "",
+		pdfUrl: "",
+		pdfTitle: "",
 	});
 
 	useEffect(() => {
@@ -114,21 +119,47 @@ export default function ContentBlocks() {
 				}))
 			: [];
 
+		// Table
+		const tableHeaders = Array.isArray(content.headers)
+			? content.headers.map((h: any) => String(h))
+			: [];
+		const tableRows = Array.isArray(content.rows)
+			? content.rows.map((row: any) =>
+					Array.isArray(row)
+						? row.map((cell: any) => String(cell))
+						: Object.values(row).map((cell: any) => String(cell)),
+				)
+			: [];
+
+		// PDF
+		const pdfUrl =
+			block?.blockType === "pdf" && typeof content.url === "string"
+				? content.url
+				: "";
+
 		return {
 			blockType: block?.blockType ?? "text",
 			position: block?.position ?? blocks?.length ?? 0,
 			isVisible: block?.isVisible ?? true,
 			textValue: typeof content.text === "string" ? content.text : "",
 			imageUrl:
-				typeof content.url === "string"
-					? content.url
-					: typeof content.src === "string"
-						? content.src
-						: "",
+				block?.blockType !== "pdf"
+					? typeof content.url === "string"
+						? content.url
+						: typeof content.src === "string"
+							? content.src
+							: ""
+					: "",
 			imageAlt: typeof content.alt === "string" ? content.alt : "",
 			htmlValue: typeof content.html === "string" ? content.html : "",
 			listItems: listItems.join("\n"),
 			membersValue,
+			tableHeaders,
+			tableRows,
+			tableHeading:
+				typeof content.heading === "string" ? content.heading : "",
+			pdfUrl,
+			pdfTitle: typeof content.title === "string" ? content.title : "",
 		};
 	};
 
@@ -215,6 +246,39 @@ export default function ContentBlocks() {
 					return null;
 				}
 				return { members: formState.membersValue };
+			}
+			case "table": {
+				if (formState.tableHeaders.length === 0) {
+					toast.error("Add at least one column");
+					return null;
+				}
+				const emptyHeader = formState.tableHeaders.find(
+					(h) => !h.trim(),
+				);
+				if (emptyHeader !== undefined) {
+					toast.error("All column names must be filled");
+					return null;
+				}
+				const result: Record<string, any> = {
+					headers: formState.tableHeaders,
+					rows: formState.tableRows,
+				};
+				if (formState.tableHeading.trim()) {
+					result.heading = formState.tableHeading.trim();
+				}
+				return result;
+			}
+			case "pdf": {
+				const url = formState.pdfUrl.trim();
+				if (!url) {
+					toast.error("PDF file or URL is required");
+					return null;
+				}
+				const result: Record<string, any> = { url };
+				if (formState.pdfTitle.trim()) {
+					result.title = formState.pdfTitle.trim();
+				}
+				return result;
 			}
 			default:
 				return {};

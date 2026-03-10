@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const blockTypes = ["text", "image", "list", "html", "members"] as const;
+export const blockTypes = ["text", "image", "list", "html", "members", "table", "pdf"] as const;
 
 export const createContentBlockSchema = z.object({
     blockType: z.enum(blockTypes),

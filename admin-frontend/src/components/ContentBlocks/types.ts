@@ -20,6 +20,11 @@ export interface BlockFormState {
 	htmlValue: string;
 	listItems: string;
 	membersValue: MemberEntry[];
+	tableHeaders: string[];
+	tableRows: string[][];
+	tableHeading: string;
+	pdfUrl: string;
+	pdfTitle: string;
 }
 
-export const blockTypeOptions: BlockType[] = ["text", "image", "list", "html", "members"];
+export const blockTypeOptions: BlockType[] = ["text", "image", "list", "html", "members", "table", "pdf"];

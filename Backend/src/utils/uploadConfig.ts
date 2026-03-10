@@ -16,13 +16,15 @@ export type UploadFolder =
     | "notifications"
     | "faculty"
     | "events"
-    | "general";
+    | "general"
+    | "pdf";
 
 export const VALID_FOLDERS: UploadFolder[] = [
     "notifications",
     "faculty",
     "events",
     "general",
+    "pdf",
 ];
 
 // ─── MIME → Media type mapping ────────────────────────────────────────────────
