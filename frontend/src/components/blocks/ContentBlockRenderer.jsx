@@ -67,30 +67,41 @@ const TableBlock = ({ content }) => {
     const rows = content.rows || [];
 
     return (
-        <div className="my-4 overflow-x-auto">
+        <div className="my-6">
             {content.heading && (
-                <h3 className="text-lg font-bold text-gray-800 mb-2">{content.heading}</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-3">{content.heading}</h3>
             )}
-            <table className="w-full text-sm text-left border border-gray-200 rounded-lg overflow-hidden">
-                {headers.length > 0 && (
-                    <thead className="bg-gray-50 text-gray-600 font-semibold uppercase text-xs">
-                        <tr>
-                            {headers.map((header, i) => (
-                                <th key={i} className="px-4 py-3 border-b border-gray-200">{header}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                )}
-                <tbody className="divide-y divide-gray-100">
-                    {rows.map((row, i) => (
-                        <tr key={i} className="hover:bg-gray-50">
-                            {(Array.isArray(row) ? row : Object.values(row)).map((cell, j) => (
-                                <td key={j} className="px-4 py-3 text-gray-700">{cell}</td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                <table className="w-full text-sm text-left">
+                    {headers.length > 0 && (
+                        <thead>
+                            <tr className="bg-blue-900 text-white">
+                                <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide border-r border-blue-800/40 last:border-r-0 whitespace-nowrap">#</th>
+                                {headers.map((header, i) => (
+                                    <th key={i} className="px-5 py-3 text-xs font-semibold uppercase tracking-wide border-r border-blue-800/40 last:border-r-0 whitespace-nowrap">{header}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                    )}
+                    <tbody className="divide-y divide-gray-100">
+                        {rows.map((row, i) => (
+                            <tr key={i} className={`hover:bg-blue-50/40 transition-colors ${i % 2 === 1 ? 'bg-gray-50/60' : 'bg-white'}`}>
+                                <td className="px-5 py-3 text-gray-400 font-medium text-xs whitespace-nowrap">{i + 1}</td>
+                                {(Array.isArray(row) ? row : Object.values(row)).map((cell, j) => (
+                                    <td key={j} className="px-5 py-3 text-black text-sm">{cell}</td>
+                                ))}
+                            </tr>
+                        ))}
+                        {rows.length === 0 && (
+                            <tr>
+                                <td colSpan={headers.length + 1} className="px-5 py-8 text-center text-gray-400 text-sm">
+                                    No data available.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
