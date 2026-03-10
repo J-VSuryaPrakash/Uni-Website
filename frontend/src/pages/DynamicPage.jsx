@@ -46,23 +46,15 @@ const DynamicPage = () => {
     }
 
     const sections = page.sections || [];
-    const hasContent = sections.some(s => s.contentBlocks && s.contentBlocks.length > 0);
 
     return (
         <SidebarLayout title={sectionTitle} menuItems={sidebarItems}>
             <div className="py-2">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6">{page.title}</h1>
 
-                {hasContent ? (
-                    sections.map((section) => (
-                        <SectionRenderer key={section.id} section={section} />
-                    ))
-                ) : (
-                    <div className="prose max-w-none text-gray-600">
-                        <p className="text-lg">This is the {page.title} page.</p>
-                        <p className="mt-4">Content will be populated here.</p>
-                    </div>
-                )}
+                {sections.map((section) => (
+                    <SectionRenderer key={section.id} section={section} />
+                ))}
 
                 {/* Child pages listing */}
                 {page.children && page.children.length > 0 && (
