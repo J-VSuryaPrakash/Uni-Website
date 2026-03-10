@@ -16,20 +16,22 @@ function App() {
   const location = useLocation();
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <ScrollToTop />
       {location.pathname === '/' && <Header />}
       {location.pathname === '/' && <Ticker />}
       <Navbar />
       <Breadcrumbs />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/*" element={<DynamicPage />} />
-      </Routes>
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/*" element={<DynamicPage />} />
+        </Routes>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
