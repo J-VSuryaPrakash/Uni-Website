@@ -31,6 +31,7 @@ import pageSectionRoutes from "./modules/pageSections/pageSections.route";
 import departmentRoutes from "./modules/department/department.route";
 import designationRoutes from "./modules/designation/designation.route";
 import directorateRoutes from "./modules/directorate/directorate.router";
+import directoratePublicRoutes from "./modules/directorate/directorate.public.route";
 import pageDirectorateRoutes from "./modules/pageDirectorates/pageDirectorates.route";
 
 // Notification Routes (Admin & Public)
@@ -137,6 +138,7 @@ app.use("/api/v1/admin/designations", designationRoutes);
 app.use("/api/v1/admin/departments", departmentRoutes);
 app.use("/api/v1/admin/directorates", directorateRoutes);
 app.use("/api/v1/admin/page-directorates", pageDirectorateRoutes);
+app.use("/api/v1/directorates", directoratePublicRoutes);
 
 // --------------------------------------------------
 // Notification Routes

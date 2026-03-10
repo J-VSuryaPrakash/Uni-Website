@@ -3,6 +3,8 @@ import ContentBlocks from "@/pages/ContentBlocks";
 import Dashboard from "./pages/Dashboard";
 import DashboardHome from "./pages/DashboardHome";
 import Departments from "@/pages/Departments";
+import Designations from "@/pages/Designations";
+import Directorates from "@/pages/Directorates";
 import Login from "@/pages/Login";
 import Menu from "@/pages/Menu";
 import Notifications from "@/pages/Notifications";
@@ -32,6 +34,8 @@ const App = () => {
 					<Route path="content-blocks" element={<ContentBlocks />} />
 					<Route path="notifications" element={<Notifications />} />
 					<Route path="departments" element={<Departments />} />
+				<Route path="designations" element={<Designations />} />
+				<Route path="directorates" element={<Directorates />} />
 				</Route>
 
 				<Route path="*" element={<Navigate to="/login" replace />} />

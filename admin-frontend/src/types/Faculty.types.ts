@@ -4,6 +4,7 @@ export interface Designation {
 	id: number;
 	title: string;
 	priority: number;
+	category: 'ADMINISTRATION' | 'DIRECTORATES' | 'PRINCIPALS' | 'EXAMINATION';
 }
 
 export interface Department {

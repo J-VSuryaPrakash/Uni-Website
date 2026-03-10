@@ -241,6 +241,20 @@ export default class PageService {
 						position: true,
 					},
 				},
+				directorates: {
+					orderBy: { position: "asc" },
+					include: {
+						directorate: {
+							include: {
+								designations: {
+									include: { designation: true },
+								},
+								department: true,
+								photo: true,
+							},
+						},
+					},
+				},
 			},
 		});
 

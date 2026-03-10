@@ -4,7 +4,7 @@ const ProfileSchema = z.object({
     title: z.string().min(2).max(200).trim().optional(),
 
     qualifications: z.array(
-        z.string().min(2).max(200).trim()
+        z.string().min(1).max(200).trim()
     ).optional(),
 
     address: z.object({
@@ -25,13 +25,13 @@ const ProfileSchema = z.object({
 
 
 const DirectorateSchema = z.object({
-    name: z.string().min(2).max(100).trim(),
-    designationId: z.number().int().optional(),
+    name: z.string().min(2).max(200).trim(),
+    designationIds: z.array(z.number().int()).optional().default([]),
     departmentId: z.number().int().optional(),
-    photoUrl: z.string().optional().nullable(),
+    photoMediaId: z.number().int().optional().nullable(),
     profile: ProfileSchema,
     isActive: z.boolean().default(true)
-})
+});
 
 
 export const createDirectorateSchema = DirectorateSchema;

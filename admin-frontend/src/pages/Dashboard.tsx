@@ -7,6 +7,8 @@ import {
 	Menu,
 	PanelsTopLeft,
 	Shapes,
+	Tag,
+	Users,
 } from "lucide-react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
@@ -21,6 +23,8 @@ const navItems = [
 	{ label: "Content Blocks", to: "/content-blocks", icon: Blocks },
 	{ label: "Notifications", to: "/notifications", icon: Bell },
 	{ label: "Departments", to: "/departments", icon: Building2 },
+	{ label: "Designations", to: "/designations", icon: Tag },
+	{ label: "Directorates", to: "/directorates", icon: Users },
 ];
 
 export default function Dashboard() {

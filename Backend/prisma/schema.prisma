@@ -7,6 +7,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum DesignationCategory {
+  ADMINISTRATION
+  DIRECTORATES
+  PRINCIPALS
+  EXAMINATION
+}
+
 model Menu {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(100)
@@ -60,10 +67,20 @@ model ContentBlock {
 }
 
 model Designation {
-  id           Int           @id @default(autoincrement())
-  title        String        @unique @db.VarChar(100)
+  id           Int                      @id @default(autoincrement())
+  title        String                   @unique @db.VarChar(100)
   priority     Int
-  directorates Directorate[]
+  category     DesignationCategory      @default(ADMINISTRATION)
+  directorates DirectorateDesignation[]
+}
+
+model DirectorateDesignation {
+  directorateId Int
+  designationId Int
+  directorate   Directorate @relation(fields: [directorateId], references: [id], onDelete: Cascade)
+  designation   Designation @relation(fields: [designationId], references: [id], onDelete: Cascade)
+
+  @@id([directorateId, designationId])
 }
 
 model Department {
@@ -74,15 +91,15 @@ model Department {
 }
 
 model Directorate {
-  id               Int                @id @default(autoincrement())
-  name             String             @db.VarChar(200)
-  designationId    Int?
+  id               Int                      @id @default(autoincrement())
+  name             String                   @db.VarChar(200)
   departmentId     Int?
-  photoUrl         String?
+  photoMediaId     Int?
   profile          Json?
-  isActive         Boolean            @default(true)
-  department       Department?        @relation(fields: [departmentId], references: [id])
-  designation      Designation?       @relation(fields: [designationId], references: [id])
+  isActive         Boolean                  @default(true)
+  department       Department?              @relation(fields: [departmentId], references: [id])
+  photo            Media?                   @relation(fields: [photoMediaId], references: [id])
+  designations     DirectorateDesignation[]
   pageDirectorates PageDirectorates[]
 }
 
@@ -119,8 +136,9 @@ model Media {
   type        String?                  @db.VarChar(30)
   createdAt   DateTime                 @default(now())
   updatedAt   DateTime                 @default(now()) @updatedAt
-  attachments NotificationAttachment[]
-  eventMedia  EventMedia[]
+  attachments  NotificationAttachment[]
+  eventMedia   EventMedia[]
+  directorates Directorate[]
 }
 
 model Admin {

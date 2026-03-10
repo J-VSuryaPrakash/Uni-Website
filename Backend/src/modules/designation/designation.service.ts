@@ -17,7 +17,8 @@ export default class DesignationService {
         const designation = await prisma.designation.create({
             data: {
                 title: data.title,
-                priority: data.priority
+                priority: data.priority,
+                category: data.category,
             }
         });
 
@@ -43,6 +44,7 @@ export default class DesignationService {
             data: {
                 ...(data.title !== undefined && { title: data.title }),
                 ...(data.priority !== undefined && { priority: data.priority }),
+                ...(data.category !== undefined && { category: data.category }),
             }
         });
 
