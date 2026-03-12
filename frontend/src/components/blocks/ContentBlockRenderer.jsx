@@ -76,7 +76,7 @@ const TableBlock = ({ content }) => {
                     {headers.length > 0 && (
                         <thead>
                             <tr className="bg-blue-900 text-white">
-                                <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide border-r border-blue-800/40 last:border-r-0 whitespace-nowrap">#</th>
+                                <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wide border-r border-blue-800/40 last:border-r-0 whitespace-nowrap">Sl.no</th>
                                 {headers.map((header, i) => (
                                     <th key={i} className="px-5 py-3 text-xs font-semibold uppercase tracking-wide border-r border-blue-800/40 last:border-r-0 whitespace-nowrap">{header}</th>
                                 ))}

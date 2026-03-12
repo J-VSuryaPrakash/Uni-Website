@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import { useMenuTree } from "../../hooks/useMenuTree";
-import { MENU_ITEMS } from "./MenuItem";
 import { NavbarSkeleton } from "../common/Skeleton";
 
 const Navbar = () => {
@@ -14,7 +13,7 @@ const Navbar = () => {
   const { data: dynamicMenu, isLoading: menuLoading } = useMenuTree();
 
   // Use dynamic menu from API, fallback to static MENU_ITEMS
-  const menuItems = dynamicMenu && dynamicMenu.length > 0 ? dynamicMenu : MENU_ITEMS;
+  const menuItems = dynamicMenu || [];
 
   useEffect(() => {
     const handleScroll = () => {

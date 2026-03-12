@@ -574,12 +574,12 @@ export default function MenuPages() {
 									value={
 										formState.menuId !== null
 											? String(formState.menuId)
-											: ""
+											: "none"
 									}
 									onValueChange={(v) =>
 										setFormState((p) => ({
 											...p,
-											menuId: v ? Number(v) : null,
+											menuId: v === "none" ? null : Number(v),
 										}))
 									}
 								>
@@ -587,7 +587,7 @@ export default function MenuPages() {
 										<SelectValue placeholder="No menu" />
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value="">
+										<SelectItem value="none">
 											No menu
 										</SelectItem>
 										{(menus ?? []).map((m) => (
