@@ -25,6 +25,8 @@ export interface BlockFormState {
 	tableHeading: string;
 	pdfUrl: string;
 	pdfTitle: string;
+	directorateTitle: string;
+	directorateIds: number[];
 }
 
-export const blockTypeOptions: BlockType[] = ["text", "image", "list", "html", "members", "table", "pdf"];
+export const blockTypeOptions: BlockType[] = ["text", "image", "list", "html", "members", "table", "pdf", "directorate"];

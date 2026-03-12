@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { BlockType, ContentBlock } from "@/types/ContentBlocks.types";
 import type { PageSection } from "@/types/PageSection.types";
 import { FileText, ImageIcon, Loader2, Upload, X } from "lucide-react";
+import DirectorateBlockEditor from "./DirectorateBlockEditor";
 import MembersBlockEditor from "./MembersBlockEditor";
 import TableBlockEditor from "./TableBlockEditor";
 import type { BlockFormState } from "./types";
@@ -145,7 +146,7 @@ export default function ContentBlockFormDialog({
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={`bg-white flex flex-col max-h-[90vh] ${formState.blockType === "members" || formState.blockType === "table" ? "sm:max-w-3xl" : "sm:max-w-150"}`}
+				className={`bg-white flex flex-col max-h-[90vh] ${formState.blockType === "members" || formState.blockType === "table" || formState.blockType === "directorate" ? "sm:max-w-3xl" : "sm:max-w-150"}`}
 			>
 				<DialogHeader className="shrink-0">
 					<DialogTitle>
@@ -180,6 +181,7 @@ export default function ContentBlockFormDialog({
 											members: "Members List",
 											table: "Table",
 											pdf: "PDF",
+											directorate: "Directorate / Faculty",
 										};
 										return (
 											<SelectItem key={type} value={type}>
@@ -455,6 +457,26 @@ export default function ContentBlockFormDialog({
 									setFormState((prev) => ({
 										...prev,
 										tableRows,
+									}))
+								}
+							/>
+						) : null}
+
+						{/* ── Directorate ── */}
+						{formState.blockType === "directorate" ? (
+							<DirectorateBlockEditor
+								title={formState.directorateTitle}
+								selectedIds={formState.directorateIds}
+								onTitleChange={(directorateTitle) =>
+									setFormState((prev) => ({
+										...prev,
+										directorateTitle,
+									}))
+								}
+								onSelectedIdsChange={(directorateIds) =>
+									setFormState((prev) => ({
+										...prev,
+										directorateIds,
 									}))
 								}
 							/>

@@ -241,25 +241,49 @@ export default class PageService {
 						position: true,
 					},
 				},
-				directorates: {
-					orderBy: { position: "asc" },
-					include: {
-						directorate: {
-							include: {
-								designations: {
-									include: { designation: true },
-								},
-								department: true,
-								photo: true,
-							},
-						},
-					},
-				},
 			},
 		});
 
 		if (!page) {
 			throw new ApiError(404, "Page not found");
+		}
+
+		// Resolve directorate blocks: embed full directorate data into block content
+		const directorateIds = new Set<number>();
+		for (const section of page.sections) {
+			for (const block of section.contentBlocks) {
+				if (block.blockType === "directorate") {
+					const content = block.content as Record<string, any>;
+					const ids: number[] = content?.directorateIds ?? [];
+					for (const id of ids) directorateIds.add(id);
+				}
+			}
+		}
+
+		if (directorateIds.size > 0) {
+			const directorates = await prisma.directorate.findMany({
+				where: { id: { in: [...directorateIds] }, isActive: true },
+				include: {
+					designations: { include: { designation: true } },
+					department: true,
+					photo: true,
+				},
+			});
+
+			const directorateMap = new Map(directorates.map((d) => [d.id, d]));
+
+			for (const section of page.sections) {
+				for (const block of section.contentBlocks) {
+					if (block.blockType === "directorate") {
+						const content = block.content as Record<string, any>;
+						const ids: number[] = content?.directorateIds ?? [];
+						(block.content as Record<string, any>).directorates =
+							ids
+								.map((id) => directorateMap.get(id))
+								.filter(Boolean);
+					}
+				}
+			}
 		}
 
 		const breadcrumbs = await this.buildBreadcrumbs(page.id);

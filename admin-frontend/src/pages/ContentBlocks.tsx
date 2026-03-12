@@ -59,6 +59,8 @@ export default function ContentBlocks() {
 		tableHeading: "",
 		pdfUrl: "",
 		pdfTitle: "",
+		directorateTitle: "",
+		directorateIds: [],
 	});
 
 	useEffect(() => {
@@ -137,6 +139,11 @@ export default function ContentBlocks() {
 				? content.url
 				: "";
 
+		// Directorate
+		const directorateIds = Array.isArray(content.directorateIds)
+			? content.directorateIds.filter((id: any) => typeof id === "number")
+			: [];
+
 		return {
 			blockType: block?.blockType ?? "text",
 			position: block?.position ?? blocks?.length ?? 0,
@@ -160,6 +167,12 @@ export default function ContentBlocks() {
 				typeof content.heading === "string" ? content.heading : "",
 			pdfUrl,
 			pdfTitle: typeof content.title === "string" ? content.title : "",
+			directorateTitle:
+				block?.blockType === "directorate" &&
+				typeof content.title === "string"
+					? content.title
+					: "",
+			directorateIds,
 		};
 	};
 
@@ -277,6 +290,19 @@ export default function ContentBlocks() {
 				const result: Record<string, any> = { url };
 				if (formState.pdfTitle.trim()) {
 					result.title = formState.pdfTitle.trim();
+				}
+				return result;
+			}
+			case "directorate": {
+				if (formState.directorateIds.length === 0) {
+					toast.error("Select at least one directorate");
+					return null;
+				}
+				const result: Record<string, any> = {
+					directorateIds: formState.directorateIds,
+				};
+				if (formState.directorateTitle.trim()) {
+					result.title = formState.directorateTitle.trim();
 				}
 				return result;
 			}

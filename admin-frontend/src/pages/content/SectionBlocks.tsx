@@ -28,6 +28,7 @@ const BLOCK_TYPE_LABELS: Record<string, string> = {
 	members: "Members",
 	table: "Table",
 	pdf: "PDF",
+	directorate: "Directorate",
 };
 
 function formatContentPreview(block: ContentBlock): string {
@@ -64,6 +65,13 @@ function formatContentPreview(block: ContentBlock): string {
 				: typeof c.url === "string"
 					? c.url.split("/").pop() ?? ""
 					: "";
+		case "directorate": {
+			const count = Array.isArray(c.directorateIds) ? c.directorateIds.length : 0;
+			const title = typeof c.title === "string" ? c.title : "";
+			return title
+				? `${title} (${count})`
+				: `${count} directorate${count !== 1 ? "s" : ""}`;
+		}
 		default:
 			return "";
 	}
@@ -123,6 +131,8 @@ export default function SectionBlocks() {
 		tableHeading: "",
 		pdfUrl: "",
 		pdfTitle: "",
+		directorateTitle: "",
+		directorateIds: [],
 	});
 
 	const sortedBlocks = useMemo(() => {
@@ -170,6 +180,10 @@ export default function SectionBlocks() {
 			block?.blockType === "pdf" && typeof c.url === "string"
 				? c.url
 				: "";
+		const directorateIds = Array.isArray(c.directorateIds)
+			? c.directorateIds.filter((id: any) => typeof id === "number")
+			: [];
+
 		return {
 			blockType: block?.blockType ?? "text",
 			position: block?.position ?? (blocks?.length ?? 0),
@@ -193,6 +207,12 @@ export default function SectionBlocks() {
 				typeof c.heading === "string" ? c.heading : "",
 			pdfUrl,
 			pdfTitle: typeof c.title === "string" ? c.title : "",
+			directorateTitle:
+				block?.blockType === "directorate" &&
+				typeof c.title === "string"
+					? c.title
+					: "",
+			directorateIds,
 		};
 	};
 
@@ -278,6 +298,19 @@ export default function SectionBlocks() {
 				const result: Record<string, any> = { url };
 				if (formState.pdfTitle.trim()) {
 					result.title = formState.pdfTitle.trim();
+				}
+				return result;
+			}
+			case "directorate": {
+				if (formState.directorateIds.length === 0) {
+					toast.error("Select at least one directorate");
+					return null;
+				}
+				const result: Record<string, any> = {
+					directorateIds: formState.directorateIds,
+				};
+				if (formState.directorateTitle.trim()) {
+					result.title = formState.directorateTitle.trim();
 				}
 				return result;
 			}

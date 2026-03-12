@@ -1,4 +1,5 @@
 import React from 'react';
+import FacultyCard from '../common/FacultyCard';
 
 const BACKEND_ORIGIN = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api/v1')
     .replace(/\/api\/v1\/?$/, '');
@@ -234,6 +235,25 @@ const MembersBlock = ({ content }) => {
     );
 };
 
+const DirectorateBlock = ({ content }) => {
+    const directorates = Array.isArray(content.directorates) ? content.directorates : [];
+
+    if (directorates.length === 0) return null;
+
+    return (
+        <div className="my-4">
+            {content.title && (
+                <h3 className="text-lg font-bold text-gray-800 mb-3">{content.title}</h3>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {directorates.map((directorate) => (
+                    <FacultyCard key={directorate.id} directorate={directorate} />
+                ))}
+            </div>
+        </div>
+    );
+};
+
 const BLOCK_RENDERERS = {
     text: TextBlock,
     image: ImageBlock,
@@ -242,6 +262,7 @@ const BLOCK_RENDERERS = {
     table: TableBlock,
     pdf: PdfBlock,
     members: MembersBlock,
+    directorate: DirectorateBlock,
 };
 
 const ContentBlockRenderer = ({ block }) => {
