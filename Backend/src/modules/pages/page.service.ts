@@ -48,6 +48,7 @@ export default class PageService {
 			data: {
 				title: data.title,
 				slug: data.slug,
+				externalUrl: data.externalUrl ?? null,
 				position: data.position,
 				status: data.status,
 				seoMeta: data.seoMeta ?? {},

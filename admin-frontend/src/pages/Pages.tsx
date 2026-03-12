@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react";
+import { ExternalLink, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -31,6 +31,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { Status } from "@/types/Common.types";
 import { usePages } from "../hooks/usePage";
@@ -39,6 +40,7 @@ import { usePages } from "../hooks/usePage";
 interface PageFormState {
 	title: string;
 	slug: string;
+	externalUrl: string;
 	menuId: number | null;
 	parentId: number | null;
 	position: number;
@@ -68,6 +70,7 @@ export default function Pages() {
 	const [formState, setFormState] = useState<PageFormState>({
 		title: "",
 		slug: "",
+		externalUrl: "",
 		menuId: null,
 		parentId: null,
 		position: 0,
@@ -141,6 +144,7 @@ export default function Pages() {
 	const buildFormState = (page?: PageRowData | null): PageFormState => ({
 		title: page?.title ?? "",
 		slug: page?.slug ?? "",
+		externalUrl: page?.externalUrl ?? "",
 		menuId: page?.menuId ?? null,
 		parentId: page?.parentId ?? null,
 		position: page?.position ?? sortedPages.length,
@@ -184,6 +188,7 @@ export default function Pages() {
 		const data = {
 			title: formState.title,
 			slug: formState.slug,
+			externalUrl: formState.externalUrl.trim() || null,
 			menuId: formState.menuId ?? undefined,
 			parentId: formState.parentId ?? null,
 			position: formState.position,
@@ -469,6 +474,43 @@ export default function Pages() {
 									/>
 								</div>
 							</div>
+
+							{/* External Link */}
+							<div className="flex items-center justify-between rounded-lg border border-slate-200 p-3">
+								<div className="flex items-center gap-2">
+									<ExternalLink size={14} className="text-slate-400" />
+									<div>
+										<p className="text-sm font-medium text-slate-900">External Link</p>
+										<p className="text-xs text-slate-500">Opens an external URL instead of a page.</p>
+									</div>
+								</div>
+								<Switch
+									checked={!!formState.externalUrl}
+									onCheckedChange={(checked) =>
+										setFormState((prev) => ({
+											...prev,
+											externalUrl: checked ? prev.externalUrl || "https://" : "",
+										}))
+									}
+								/>
+							</div>
+							{formState.externalUrl !== "" && (
+								<div className="grid gap-2">
+									<Label htmlFor="externalUrl">External URL</Label>
+									<Input
+										id="externalUrl"
+										type="url"
+										value={formState.externalUrl}
+										onChange={(e) =>
+											setFormState((prev) => ({
+												...prev,
+												externalUrl: e.target.value,
+											}))
+										}
+										placeholder="https://example.com/results"
+									/>
+								</div>
+							)}
 
 							<div className="grid grid-cols-3 gap-4">
 								<div className="grid gap-2">

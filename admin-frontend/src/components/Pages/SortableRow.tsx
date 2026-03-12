@@ -22,6 +22,7 @@ export interface PageRowData {
 	parentId?: number | null;
 	title: string;
 	slug: string;
+	externalUrl?: string | null;
 	position: number;
 	status: Status;
 	seoMeta?: SeoMeta | null;

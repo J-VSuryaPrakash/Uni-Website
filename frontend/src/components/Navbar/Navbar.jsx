@@ -4,6 +4,22 @@ import logo from "../../assets/logo.svg";
 import { useMenuTree } from "../../hooks/useMenuTree";
 import { NavbarSkeleton } from "../common/Skeleton";
 
+// Renders <a target="_blank"> for external URLs, <Link> for internal paths
+const NavMenuLink = ({ item, className, onClick, children }) => {
+  if (item.externalUrl) {
+    return (
+      <a href={item.externalUrl} target="_blank" rel="noopener noreferrer" className={className} onClick={onClick}>
+        {children || item.label}
+      </a>
+    );
+  }
+  return (
+    <Link to={item.path} className={className} onClick={onClick}>
+      {children || item.label}
+    </Link>
+  );
+};
+
 const Navbar = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -90,25 +106,21 @@ const Navbar = () => {
                               </summary>
                               <div className="pl-6 pr-2 space-y-1 pb-2">
                                 {child.children.map((grandchild) => (
-                                  <Link
+                                  <NavMenuLink
                                     key={grandchild.label}
-                                    to={grandchild.path}
+                                    item={grandchild}
                                     className={`block px-3 py-2 text-sm rounded-md hover:bg-yellow-50 hover:text-yellow-700 transition-colors ${isActive(grandchild.path) ? "bg-yellow-50 text-yellow-700 font-medium" : "text-gray-500"}`}
-                                  >
-                                    {grandchild.label}
-                                  </Link>
+                                  />
                                 ))}
                               </div>
                             </details>
                           ) : (
-                            <Link
+                            <NavMenuLink
                               key={child.label}
-                              to={child.path}
+                              item={child}
                               className={`block px-4 py-3 text-sm hover:bg-yellow-50 hover:text-yellow-700 transition-colors border-l-2 border-transparent hover:border-yellow-500 ${isActive(child.path) ? "bg-yellow-50 text-yellow-700 border-yellow-500" : "text-gray-600"
                                 }`}
-                            >
-                              {child.label}
-                            </Link>
+                            />
                           )
                         ))}
                       </div>
@@ -173,27 +185,23 @@ const Navbar = () => {
                         </summary>
                         <div className="mt-1 ml-4 pl-4 border-l-2 border-gray-100 space-y-1">
                           {child.children.map((grandchild) => (
-                            <Link
+                            <NavMenuLink
                               key={grandchild.label}
-                              to={grandchild.path}
+                              item={grandchild}
                               className={`block px-4 py-2.5 rounded-lg text-sm transition-colors ${isActive(grandchild.path) ? "bg-yellow-50 text-yellow-700 font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-black"}`}
                               onClick={() => setMobileOpen(false)}
-                            >
-                              {grandchild.label}
-                            </Link>
+                            />
                           ))}
                         </div>
                       </details>
                     ) : (
-                      <Link
+                      <NavMenuLink
                         key={child.label}
-                        to={child.path}
+                        item={child}
                         className={`block px-4 py-2.5 rounded-lg text-sm transition-colors ${isActive(child.path) ? "bg-yellow-50 text-yellow-700 font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-black"
                           }`}
                         onClick={() => setMobileOpen(false)}
-                      >
-                        {child.label}
-                      </Link>
+                      />
                     )
                   ))}
                 </div>

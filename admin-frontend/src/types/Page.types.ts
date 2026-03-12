@@ -10,6 +10,7 @@ export interface Breadcrumb {
 export interface Page extends BaseEntity {
 	title: string;
 	slug: string;
+	externalUrl?: string | null;
 	position: number;
 	status: Status;
 
@@ -25,6 +26,7 @@ export interface Page extends BaseEntity {
 export interface CreatePageDTO {
 	title: string;
 	slug: string;
+	externalUrl?: string | null;
 	menuId?: number;
 	parentId?: number | null;
 	position: number;

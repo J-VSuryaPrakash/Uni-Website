@@ -31,6 +31,7 @@ model Page {
   parentId     Int?
   title        String             @db.VarChar(200)
   slug         String             @db.VarChar(200)
+  externalUrl  String?            @db.VarChar(500)
   position     Int
   status       String             @default("draft") @db.VarChar(20)
   seoMeta      Json?

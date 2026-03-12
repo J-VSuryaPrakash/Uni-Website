@@ -144,6 +144,23 @@ const SidebarItem = ({ item }) => {
         );
     }
 
+    if (item.externalUrl) {
+        return (
+            <a
+                href={item.externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-2 py-1 text-sm font-semibold transition-colors duration-200 group text-gray-800 hover:text-blue-700"
+            >
+                <span className="w-2 h-2 rounded-full shrink-0 bg-green-500 group-hover:bg-green-600"></span>
+                <span className="flex-1">{item.label}</span>
+                <svg className="w-3 h-3 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+            </a>
+        );
+    }
+
     return (
         <NavLink
             to={item.path}
@@ -157,7 +174,6 @@ const SidebarItem = ({ item }) => {
                 <>
                     <span className={`w-2 h-2 rounded-full shrink-0 transition-colors ${isActive ? 'bg-green-500' : 'bg-green-500 group-hover:bg-green-600'}`}></span>
                     <span className="flex-1">{item.label}</span>
-                    {/* Arrow removed for leaf items */}
                 </>
             )}
         </NavLink>

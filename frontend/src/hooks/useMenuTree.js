@@ -19,6 +19,7 @@ function transformPages(pages) {
   return pages.map((page) => ({
     label: page.title,
     path: `/${page.slug}`,
+    externalUrl: page.externalUrl || null,
     children: transformPages(page.children),
   }));
 }
