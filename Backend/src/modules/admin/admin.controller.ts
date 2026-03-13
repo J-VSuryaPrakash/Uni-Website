@@ -25,12 +25,12 @@ const loginAdmin = asyncHandler(async(req, res) => {
 		.cookie("accessToken", accessToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: "lax",
+			sameSite: "none",
 		})
 		.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: "lax",
+			sameSite: "none",
 		})
 		.json(
 			new ApiResponse(
@@ -48,12 +48,12 @@ const logoutAdmin = asyncHandler(async(req, res) => {
 		.clearCookie("accessToken", {
 			httpOnly: true,
 			secure: true,
-			sameSite: "lax",
+			sameSite: "none",
 		})
 		.clearCookie("refreshToken", {
 			httpOnly: true,
 			secure: true,
-			sameSite: "lax",
+			sameSite: "none",
 		})
 		.json(new ApiResponse(200, {}, "Admin logged out successfully"));
 })
