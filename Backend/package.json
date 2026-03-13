@@ -6,13 +6,13 @@
 	"type": "module",
 	"scripts": {
 		"dev": "nodemon --exec tsx src/server.ts",
-		"build": "prisma generate && tsup src/server.ts --format esm --platform node",
+		"build": "prisma generate && tsup src/server.ts --format esm --platform node --out-dir dist",
 		"start": "node dist/server.js",
+		"postinstall": "prisma generate",
 		"prisma:generate": "prisma generate",
 		"prisma:migrate": "prisma migrate dev",
-		"prisma:studio": "prisma studio",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
+		"prisma:studio": "prisma studio"
+	  },
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/J-VSuryaPrakash/Uni-Website.git#main"
