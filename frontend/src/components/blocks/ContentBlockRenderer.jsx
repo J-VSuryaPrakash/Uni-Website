@@ -1,7 +1,7 @@
 import React from 'react';
 import FacultyCard from '../common/FacultyCard';
 
-const BACKEND_ORIGIN = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api/v1')
+const BACKEND_ORIGIN = (import.meta.env.VITE_API_BASE_URL)
     .replace(/\/api\/v1\/?$/, '');
 
 const resolveUrl = (url) => {

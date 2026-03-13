@@ -32,7 +32,7 @@ import TableBlockEditor from "./TableBlockEditor";
 import type { BlockFormState } from "./types";
 
 const BACKEND_ORIGIN = (
-	import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api/v1"
+	import.meta.env.VITE_API_BASE_URL || window.location.origin
 ).replace(/\/api\/v1\/?$/, "");
 function resolveImageUrl(url: string) {
 	if (!url) return "";

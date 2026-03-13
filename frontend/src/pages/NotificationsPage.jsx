@@ -6,7 +6,7 @@ import { useNotifications } from '../hooks/useNotifications';
 // ─── Backend origin (strips /api/v1 from the API base URL) ────────────────────
 // Stored URLs are relative paths like /uploads/notifications/file.pdf
 // We need the backend origin to resolve them to full URLs.
-const BACKEND_ORIGIN = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api/v1')
+const BACKEND_ORIGIN = (import.meta.env.VITE_API_BASE_URL)
     .replace(/\/api\/v1\/?$/, '');
 
 /** Turns a relative /uploads/... path into a full backend URL. */
