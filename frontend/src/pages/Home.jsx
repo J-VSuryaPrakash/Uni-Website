@@ -11,9 +11,9 @@ import {
     Activity,
     FileText,
 } from 'lucide-react';
-import aicte from '../assets/aicte.svg'
-import apsche from '../assets/apsche.svg'
-import mhrd from '../assets/mhrd.svg'
+import aicte from '../assets/AICTE.svg'
+import apsche from '../assets/APSCHE.svg'
+import mhrd from '../assets/MHRD.svg'
 import naac from '../assets/NAAC.svg'
 import nirf from '../assets/NIRF.svg'
 import ugc from '../assets/UGC.svg'

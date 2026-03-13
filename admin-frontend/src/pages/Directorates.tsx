@@ -49,7 +49,7 @@ import type { Page } from "@/types/Page.types";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const BACKEND_ORIGIN = "https://uni-website-60kf.onrender.com/api/v1"
+const BACKEND_ORIGIN = import.meta.env.VITE_API_BASE_URL;
 
 function resolveUrl(url: string) {
 	if (!url) return "";

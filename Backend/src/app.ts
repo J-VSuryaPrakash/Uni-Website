@@ -73,9 +73,8 @@ const __dirname = path.dirname(__filename);
 app.use(
 	cors({
 		origin: [
-			"http://localhost:5173", // Admin frontend
-			"http://localhost:5174", // Public frontend
-			process.env.CLIENT_URL || "",
+			process.env.CLIENT_URL_ADMIN || "",
+			process.env.CLIENT_URL_PUBLIC || "",
 		].filter(Boolean),
 		credentials: true,
 	}),
@@ -90,9 +89,8 @@ app.use(helmet({
 			...helmet.contentSecurityPolicy.getDefaultDirectives(),
 			"frame-ancestors": [
 				"'self'",
-				"http://localhost:5173",
-				"http://localhost:5174",
-				...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
+				...(process.env.CLIENT_URL_ADMIN ? [process.env.CLIENT_URL_ADMIN] : []),
+				...(process.env.CLIENT_URL_PUBLIC ? [process.env.CLIENT_URL_PUBLIC] : []),
 			],
 		},
 	},
