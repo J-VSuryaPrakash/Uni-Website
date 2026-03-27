@@ -10,7 +10,8 @@ export class MediaService {
         const media = await prisma.media.create({
             data: {
                 url: input.url,
-                type: input.type
+                type: input.type,
+                fileId: (input.fileId !== undefined) ? input.fileId : null,
             }
         });
 

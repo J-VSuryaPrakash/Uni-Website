@@ -1,10 +1,11 @@
 import {z} from 'zod';
 
-const mediaTypeEnum = z.enum(['image', 'video', 'audio', 'document']);
+const mediaTypeEnum = z.enum(['image', 'video', 'audio', 'document', 'pdf']);
 
 const mediaSchema = z.object({
     url: z.string(),
-    type: mediaTypeEnum
+    type: mediaTypeEnum,
+    fileId: z.string().optional(),
 })
 
 export const createMediaSchema = mediaSchema

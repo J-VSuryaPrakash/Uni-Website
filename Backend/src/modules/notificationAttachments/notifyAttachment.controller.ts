@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { NotifyAttachmentService } from "./notifyAttachment.service";
-import { createNotifyAttachment, updateNotifyAttachment, createAttachmentWithMediaSchema } from "./notifyAttachment.validation";
+import { createNotifyAttachment, updateNotifyAttachment } from "./notifyAttachment.validation";
 import { ApiResponse } from "../../utils/apiResponse";
 
 const notifyAttachmentService = new NotifyAttachmentService();
@@ -11,16 +11,6 @@ export const createNotificationAttachment = asyncHandler(async (req: Request, re
     const data = createNotifyAttachment.parse(req.body);
 
     const result = await notifyAttachmentService.createAttachment(data);
-
-    res.status(201).json(new ApiResponse(201, result, "Notification attachment created successfully"));
-});
-
-// Creates a Media record + Attachment in one request — no pre-existing mediaId needed
-export const createNotificationAttachmentWithMedia = asyncHandler(async (req: Request, res: Response) => {
-
-    const data = createAttachmentWithMediaSchema.parse(req.body);
-
-    const result = await notifyAttachmentService.createAttachmentWithMedia(data);
 
     res.status(201).json(new ApiResponse(201, result, "Notification attachment created successfully"));
 });

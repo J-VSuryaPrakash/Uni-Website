@@ -2,73 +2,132 @@ import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { ApiResponse } from "../../utils/apiResponse";
 import { ApiError } from "../../utils/apiError";
-import { mimeToMediaType, deleteUploadedFile, toPublicUrl } from "../../utils/uploadConfig";
 import prisma from "../../DB/prisma";
+import { uploadOnImageKit, imagekit } from "../../utils/imagekitIO";
+import { createMedia } from "../media/media.controller";
 
-/**
- * POST /api/v1/admin/upload
- * Body (multipart/form-data):
- *   file   - the file to upload
- *   folder - destination folder: notifications | faculty | events | general (default: general)
- *
- * Returns a Media record with the public URL.
- */
+const folderMap: Record<string, string> = {
+  notifications: "/notifications",
+  faculty: "/faculty",
+  events: "/events",
+  general: "/general",
+  pdf: "/documents",
+};
+
+const resolveFolder = (input?: string) => {
+  if (!input) return "/general";
+  return folderMap[input] || "/general";
+};
+
+const getMediaType = (mimetype: string): string => {
+  if (mimetype.startsWith("image/")) return "image";
+  if (mimetype === "application/pdf") return "pdf";
+  if (mimetype.includes("word")) return "document";
+  return "file";
+};
+
 export const uploadFile = asyncHandler(async (req: Request, res: Response) => {
-    const file = req.file;
+  const files = (req.files as Express.Multer.File[]) || (req.file ? [req.file] : []);
 
-    if (!file) {
-        throw new ApiError(400, "No file provided. Send the file under the field name 'file'.");
-    }
+  if (!files || files.length === 0) {
+    throw new ApiError(400, "No file(s) provided");
+  }
 
-    const mediaType = mimeToMediaType(file.mimetype);
-    const publicUrl = toPublicUrl(file.path);
+  const folder = resolveFolder(req.body.folder);
 
-    let media;
-    try {
-        media = await prisma.media.create({
-            data: {
-                url: publicUrl,
-                type: mediaType,
-            },
+  const results = await Promise.allSettled(
+    files.map(async (file) => {
+      const mediaType = getMediaType(file.mimetype);
+      const uniqueName = `${Date.now()}-${file.originalname}`;
+
+      const uploadResult = await uploadOnImageKit({
+        file: file.buffer,
+        fileName: uniqueName,
+        folder,
+      });
+
+      try {
+        const media = await prisma.media.create({
+          data: {
+            url: uploadResult.url,
+            type: mediaType,
+            fileId: uploadResult.fileId,
+          },
         });
-    } catch (err) {
-        // If DB insert fails, clean up the uploaded file so disk doesn't get polluted
-        deleteUploadedFile(file.path);
-        throw new ApiError(500, "Failed to save file record. The uploaded file has been removed.");
-    }
 
-    res.status(201).json(
-        new ApiResponse(201, {
-            ...media,
-            originalName: file.originalname,
-            size: file.size,
-            mimetype: file.mimetype,
-        }, "File uploaded successfully"),
-    );
+        return {
+          id: media.id,
+          url: media.url,
+          type: media.type,
+          size: uploadResult.size,
+          originalName: uploadResult.name,
+          mimetype: file.mimetype,
+        };
+      } catch (err) {
+        await imagekit.deleteFile(uploadResult.fileId);
+        throw new Error("DB save failed, upload rolled back");
+      }
+    })
+  );
+
+  const success = results
+    .filter((r) => r.status === "fulfilled")
+    .map((r: any) => r.value);
+
+  const failed = results
+    .filter((r) => r.status === "rejected")
+    .map((r: any) => r.reason?.message || "Upload failed");
+
+  let responseData;
+
+  if (success.length === 0) {
+    throw new ApiError(500, failed[0] || "Upload failed");
+  }
+
+  if (success.length === 1 && files.length === 1) {
+    responseData = success[0];
+  }
+
+  else {
+    responseData = {
+      files: success,
+      failed,
+      total: files.length,
+      uploaded: success.length,
+    };
+  }
+  
+  return res.status(201).json(
+    new ApiResponse(
+      201,
+      responseData,
+      "Upload completed"
+    )
+  );
 });
 
-/**
- * DELETE /api/v1/admin/upload/:id
- * Deletes the Media record from DB AND the file from disk.
- */
 export const deleteUpload = asyncHandler(async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+  const id = Number(req.params.id);
 
-    const media = await prisma.media.findUnique({ where: { id } });
-    if (!media) {
-        throw new ApiError(404, "Media record not found");
-    }
+  const media = await prisma.media.findUnique({
+    where: { id },
+  });
 
-    // Build the absolute disk path from the stored public URL
-    const { UPLOADS_ROOT } = await import("../../utils/uploadConfig");
-    const relativePath = media.url.replace(/^\/uploads\//, "");
-    const absolutePath = `${UPLOADS_ROOT}/${relativePath}`;
+  if (!media) {
+    throw new ApiError(404, "Media not found");
+  }
 
-    // Delete from DB first
-    await prisma.media.delete({ where: { id } });
+  try {
+    await imagekit.deleteFile(media.fileId || "");
+  } catch (err: any) {
+    throw new ApiError(500, `ImageKit delete failed: ${err.message}`);
+  }
 
-    // Then remove from disk (non-fatal if file is already gone)
-    deleteUploadedFile(absolutePath);
+  await prisma.media.delete({
+    where: { id },
+  });
 
-    res.status(200).json(new ApiResponse(200, { id }, "File deleted successfully"));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { id }, "File deleted successfully"));
 });

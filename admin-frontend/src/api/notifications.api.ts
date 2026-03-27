@@ -1,7 +1,7 @@
 import apiClient from "./axios";
 import type { ApiResponse } from "../types/ApiResponce.types";
 import type {
-	CreateAttachmentWithMediaDTO,
+	CreateAttachment,
 	CreateNotificationDTO,
 	Notification,
 	NotificationAttachment,
@@ -60,11 +60,11 @@ export const getAttachmentsByNotification = async (notificationId: number) => {
 };
 
 // Creates Media record + Attachment in one call — no pre-existing mediaId needed
-export const createAttachmentWithMedia = async (
-	payload: CreateAttachmentWithMediaDTO,
+export const createAttachment = async (
+	payload: CreateAttachment,
 ) => {
 	const res = await apiClient.post<ApiResponse<NotificationAttachment>>(
-		"/admin/notification-attachments/with-media",
+		"/admin/notification-attachments/",
 		payload,
 	);
 	return res.data.data;

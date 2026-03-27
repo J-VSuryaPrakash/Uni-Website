@@ -19,7 +19,7 @@ import {
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { uploadFile as uploadFileApi } from "@/api/upload.api";
+import { uploadFile as uploadFileApi , createMediaApi} from "@/api/upload.api";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -504,8 +504,7 @@ function AttachmentsPanel({ notification, onClose }: AttachmentsPanelProps) {
 					{
 						notificationId: notification!.id,
 						title: uploadTitle.trim(),
-						url: media.url,
-						mediaType: (media.type ?? "document") as MediaType,
+						mediaId: media.id,
 						position: attachments?.length ?? 0,
 					},
 					{
@@ -520,8 +519,8 @@ function AttachmentsPanel({ notification, onClose }: AttachmentsPanelProps) {
 		} catch (err: any) {
 			toast.error(
 				err?.response?.data?.message ??
-					err?.message ??
-					"Upload failed. Please try again.",
+				err?.message ??
+				"Upload failed. Please try again.",
 			);
 		} finally {
 			setIsUploading(false);
@@ -530,35 +529,46 @@ function AttachmentsPanel({ notification, onClose }: AttachmentsPanelProps) {
 	};
 
 	// ── Add from URL ──
-	const handleAddFromUrl = () => {
+	const handleAddFromUrl = async () => {
 		if (!attTitle.trim()) {
 			toast.error("Please enter a title for the attachment");
 			return;
 		}
+
 		if (!attUrl.trim()) {
 			toast.error("Please enter the URL of the file");
 			return;
 		}
 
-		addAttachment.mutate(
-			{
-				notificationId: notification!.id,
-				title: attTitle.trim(),
-				url: attUrl.trim(),
-				mediaType: attType,
-				position: attachments?.length ?? 0,
-			},
-			{
-				onSuccess: () => {
-					toast.success("Attachment added successfully");
-					resetUrlForm();
+		try {
+			const media = await createMediaApi({
+				url: attUrl,
+				type: attType,
+			});
+
+			addAttachment.mutate(
+				{
+					notificationId: notification!.id,
+					title: attTitle.trim(),
+					mediaId: media.id,
+					position: attachments?.length ?? 0,
 				},
-				onError: (err: any) =>
-					toast.error(
-						err?.response?.data?.message ?? "Failed to add attachment",
-					),
-			},
-		);
+				{
+					onSuccess: () => {
+						toast.success("Attachment added successfully");
+						resetUrlForm();
+					},
+					onError: (err: any) =>
+						toast.error(
+							err?.response?.data?.message ?? "Failed to add attachment"
+						),
+				}
+			);
+		} catch (err: any) {
+			toast.error(
+				err?.response?.data?.message ?? "Failed to create media from URL"
+			);
+		}
 	};
 
 	// ── Delete attachment ──
@@ -594,22 +604,20 @@ function AttachmentsPanel({ notification, onClose }: AttachmentsPanelProps) {
 					<div className="flex rounded-lg border border-slate-200 bg-slate-50 p-1 gap-1">
 						<button
 							onClick={() => setMode("upload")}
-							className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2 text-sm font-medium transition-all ${
-								mode === "upload"
-									? "bg-white text-indigo-700 shadow-sm"
-									: "text-slate-500 hover:text-slate-700"
-							}`}
+							className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2 text-sm font-medium transition-all ${mode === "upload"
+								? "bg-white text-indigo-700 shadow-sm"
+								: "text-slate-500 hover:text-slate-700"
+								}`}
 						>
 							<UploadCloud className="h-4 w-4" />
 							Upload from Computer
 						</button>
 						<button
 							onClick={() => setMode("url")}
-							className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2 text-sm font-medium transition-all ${
-								mode === "url"
-									? "bg-white text-indigo-700 shadow-sm"
-									: "text-slate-500 hover:text-slate-700"
-							}`}
+							className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2 text-sm font-medium transition-all ${mode === "url"
+								? "bg-white text-indigo-700 shadow-sm"
+								: "text-slate-500 hover:text-slate-700"
+								}`}
 						>
 							<Link className="h-4 w-4" />
 							Paste a URL
@@ -622,11 +630,10 @@ function AttachmentsPanel({ notification, onClose }: AttachmentsPanelProps) {
 							{/* File drop zone */}
 							<div
 								onClick={() => fileInputRef.current?.click()}
-								className={`relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-8 cursor-pointer transition-colors ${
-									pickedFile
-										? "border-indigo-300 bg-indigo-50/40"
-										: "border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/20"
-								}`}
+								className={`relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-8 cursor-pointer transition-colors ${pickedFile
+									? "border-indigo-300 bg-indigo-50/40"
+									: "border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/20"
+									}`}
 							>
 								<input
 									ref={fileInputRef}

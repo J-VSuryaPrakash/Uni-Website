@@ -1,6 +1,6 @@
 import prisma from "../../DB/prisma";
 import { ApiError } from "../../utils/apiError";
-import type { CreateNotifyAttachmentDTO, CreateAttachmentWithMediaDTO, UpdateNotifyAttachmentDTO } from "./notifyAttachment.validation";
+import type { CreateNotifyAttachmentDTO, UpdateNotifyAttachmentDTO } from "./notifyAttachment.validation";
 
 export class NotifyAttachmentService {
 
@@ -17,33 +17,6 @@ export class NotifyAttachmentService {
         });
 
         return newAttachment;
-    }
-
-    // Creates a Media record and links it as an attachment in one transaction
-    async createAttachmentWithMedia(data: CreateAttachmentWithMediaDTO) {
-
-        const result = await prisma.$transaction(async (tx) => {
-            const media = await tx.media.create({
-                data: {
-                    url: data.url,
-                    type: data.mediaType
-                }
-            });
-
-            const attachment = await tx.notificationAttachment.create({
-                data: {
-                    notificationId: data.notificationId,
-                    title: data.title,
-                    mediaId: media.id,
-                    position: data.position ?? 0
-                },
-                include: { media: true }
-            });
-
-            return attachment;
-        });
-
-        return result;
     }
 
     // Deletes the attachment and its linked media record

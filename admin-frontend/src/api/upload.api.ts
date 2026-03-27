@@ -40,7 +40,18 @@ export const uploadFile = async (
 			},
 		},
 	);
+	
+	return res.data.data;
+};
 
+export const createMediaApi = async (payload: {
+	url: string;
+	type: string;
+}): Promise<Media> => {
+	const res = await apiClient.post<ApiResponse<Media>>(
+		"/admin/media",
+		payload,
+	);
 	return res.data.data;
 };
 

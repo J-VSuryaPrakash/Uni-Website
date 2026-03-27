@@ -39,7 +39,7 @@ export const useNotificationAttachments = (notificationId: number | null) => {
 	});
 
 	const addAttachment = useMutation({
-		mutationFn: notifApi.createAttachmentWithMedia,
+		mutationFn: notifApi.createAttachment,
 		onSuccess: () => qc.invalidateQueries({ queryKey: key }),
 	});
 

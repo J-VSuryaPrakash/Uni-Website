@@ -54,10 +54,9 @@ export interface CreateNotificationDTO {
 
 export interface UpdateNotificationDTO extends Partial<CreateNotificationDTO> {}
 
-export interface CreateAttachmentWithMediaDTO {
+export interface CreateAttachment {
 	notificationId: number;
 	title: string;
-	url: string;
-	mediaType: MediaType;
+	mediaId: number;
 	position?: number;
 }

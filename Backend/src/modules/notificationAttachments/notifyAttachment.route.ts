@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
     createNotificationAttachment,
-    createNotificationAttachmentWithMedia,
     deleteNotificationAttachmentWithMedia,
     getNotificationAttachmentById,
     getNotificationAttachmentByNotificationId,
@@ -17,7 +16,6 @@ router.get('/notification/:notificationId', getNotificationAttachmentByNotificat
 
 // Admin routes
 router.post('/', authMiddleware, createNotificationAttachment);
-router.post('/with-media', authMiddleware, createNotificationAttachmentWithMedia);
 router.patch('/:id', authMiddleware, updateNotificationAttachment);
 router.get('/:id', authMiddleware, getNotificationAttachmentById);
 router.delete('/:id/with-media', authMiddleware, deleteNotificationAttachmentWithMedia);
