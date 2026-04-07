@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createNotification, getNotifications, getNotificationByCategory, getLiveScrollingNotifications, toggleNotificationActiveStatus, updateNotification, } from "./notification.controller";
+import { createNotification, getNotifications, getNotificationByCategory, getLiveScrollingNotifications, toggleNotificationActiveStatus, updateNotification, getAllNotifications, } from "./notification.controller";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 
 const router = Router();
@@ -13,7 +13,7 @@ router.get("/public/:category", getNotificationByCategory);
 // Admin routes
 
 router.post("/", authMiddleware, createNotification);
-router.get("/", authMiddleware, getNotifications);
+router.get("/", authMiddleware, getAllNotifications);
 router.get("/:category", authMiddleware, getNotificationByCategory);
 router.patch("/update/:id",authMiddleware, updateNotification);
 router.patch("/:id", authMiddleware, toggleNotificationActiveStatus);

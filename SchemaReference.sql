@@ -24,6 +24,7 @@ model Page {
   parentId     Int?
   title        String             @db.VarChar(200)
   slug         String             @db.VarChar(200)
+  externalUrl  String?            @db.VarChar(500)
   position     Int
   status       String             @default("draft") @db.VarChar(20)
   seoMeta      Json?
@@ -39,7 +40,7 @@ model Page {
 model PageSection {
   id            Int            @id @default(autoincrement())
   pageId        Int
-  title         String         @db.VarChar(200)
+  title         String?        @db.VarChar(200)
   position      Int
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @default(now()) @updatedAt
@@ -60,10 +61,20 @@ model ContentBlock {
 }
 
 model Designation {
-  id           Int           @id @default(autoincrement())
-  title        String        @unique @db.VarChar(100)
+  id           Int                      @id @default(autoincrement())
+  title        String                   @unique @db.VarChar(100)
   priority     Int
-  directorates Directorate[]
+  category     DesignationCategory      @default(ADMINISTRATION)
+  directorates DirectorateDesignation[]
+}
+
+model DirectorateDesignation {
+  directorateId Int
+  designationId Int
+  designation   Designation @relation(fields: [designationId], references: [id], onDelete: Cascade)
+  directorate   Directorate @relation(fields: [directorateId], references: [id], onDelete: Cascade)
+
+  @@id([directorateId, designationId])
 }
 
 model Department {
@@ -74,15 +85,15 @@ model Department {
 }
 
 model Directorate {
-  id               Int                @id @default(autoincrement())
-  name             String             @db.VarChar(200)
-  designationId    Int?
+  id               Int                      @id @default(autoincrement())
+  name             String                   @db.VarChar(200)
   departmentId     Int?
-  photoUrl         String?
+  photoMediaId     Int?
   profile          Json?
-  isActive         Boolean            @default(true)
-  department       Department?        @relation(fields: [departmentId], references: [id])
-  designation      Designation?       @relation(fields: [designationId], references: [id])
+  isActive         Boolean                  @default(true)
+  department       Department?              @relation(fields: [departmentId], references: [id])
+  photo            Media?                   @relation(fields: [photoMediaId], references: [id])
+  designations     DirectorateDesignation[]
   pageDirectorates PageDirectorates[]
 }
 
@@ -114,13 +125,15 @@ model Notification {
 }
 
 model Media {
-  id          Int                      @id @default(autoincrement())
-  url         String
-  type        String?                  @db.VarChar(30)
-  createdAt   DateTime                 @default(now())
-  updatedAt   DateTime                 @default(now()) @updatedAt
-  attachments NotificationAttachment[]
-  eventMedia  EventMedia[]
+  id           Int                      @id @default(autoincrement())
+  url          String
+  type         String?                  @db.VarChar(30)
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @default(now()) @updatedAt
+  fileId       String?                  @db.VarChar(100)
+  directorates Directorate[]
+  eventMedia   EventMedia[]
+  attachments  NotificationAttachment[]
 }
 
 model Admin {
@@ -138,8 +151,8 @@ model NotificationAttachment {
   position       Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
-  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   media          Media        @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
 }
 
 model EventCategory {
@@ -150,25 +163,23 @@ model EventCategory {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-
-  events Event[]
+  events    Event[]
 
   @@index([isActive, position])
 }
 
 model Event {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   categoryId  Int
-  title       String    @db.VarChar(200)
+  title       String        @db.VarChar(200)
   description String?
   eventDate   DateTime?
   position    Int
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-
-  category EventCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  media    EventMedia[]
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  category    EventCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  media       EventMedia[]
 
   @@index([categoryId, isActive, position])
   @@index([eventDate(sort: Desc)])
@@ -184,4 +195,11 @@ model EventMedia {
   media    Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
   @@index([eventId, position])
+}
+
+enum DesignationCategory {
+  ADMINISTRATION
+  DIRECTORATES
+  PRINCIPALS
+  EXAMINATION
 }

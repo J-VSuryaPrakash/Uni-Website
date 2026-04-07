@@ -70,21 +70,21 @@ const __dirname = path.dirname(__filename);
 // ============================
 // Middleware Configuration
 // ============================
-app.use(
-	cors({
-		origin: [
-			process.env.CLIENT_URL_ADMIN || "",
-			process.env.CLIENT_URL_PUBLIC || "",
-		].filter(Boolean),
-		credentials: true,
-	}),
-);
+// app.use(
+// 	cors({
+// 		origin: [
+// 			process.env.CLIENT_URL_ADMIN || "",
+// 			process.env.CLIENT_URL_PUBLIC || "",
+// 		].filter(Boolean),
+// 		credentials: true,
+// 	}),
+// );
 
-// app.use(cors({
-// 	origin: "http://localhost:5173",
-// 	credentials: true,
-// 	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-// }))
+app.use(cors({
+	origin: ["http://localhost:5173", "http://localhost:5174"],
+	credentials: true,
+	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+}))
 
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies from request headers

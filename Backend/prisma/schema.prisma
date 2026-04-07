@@ -7,13 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum DesignationCategory {
-  ADMINISTRATION
-  DIRECTORATES
-  PRINCIPALS
-  EXAMINATION
-}
-
 model Menu {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(100)
@@ -78,8 +71,8 @@ model Designation {
 model DirectorateDesignation {
   directorateId Int
   designationId Int
-  directorate   Directorate @relation(fields: [directorateId], references: [id], onDelete: Cascade)
   designation   Designation @relation(fields: [designationId], references: [id], onDelete: Cascade)
+  directorate   Directorate @relation(fields: [directorateId], references: [id], onDelete: Cascade)
 
   @@id([directorateId, designationId])
 }
@@ -135,12 +128,12 @@ model Media {
   id           Int                      @id @default(autoincrement())
   url          String
   type         String?                  @db.VarChar(30)
-  fileId       String?                  @db.VarChar(100)
   createdAt    DateTime                 @default(now())
   updatedAt    DateTime                 @default(now()) @updatedAt
-  attachments  NotificationAttachment[]
-  eventMedia   EventMedia[]
+  fileId       String?                  @db.VarChar(100)
   directorates Directorate[]
+  eventMedia   EventMedia[]
+  attachments  NotificationAttachment[]
 }
 
 model Admin {
@@ -158,8 +151,8 @@ model NotificationAttachment {
   position       Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
-  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
   media          Media        @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
 }
 
 model EventCategory {
@@ -170,25 +163,23 @@ model EventCategory {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-
-  events Event[]
+  events    Event[]
 
   @@index([isActive, position])
 }
 
 model Event {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   categoryId  Int
-  title       String    @db.VarChar(200)
+  title       String        @db.VarChar(200)
   description String?
   eventDate   DateTime?
   position    Int
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-
-  category EventCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  media    EventMedia[]
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  category    EventCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  media       EventMedia[]
 
   @@index([categoryId, isActive, position])
   @@index([eventDate(sort: Desc)])
@@ -204,4 +195,11 @@ model EventMedia {
   media    Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
   @@index([eventId, position])
+}
+
+enum DesignationCategory {
+  ADMINISTRATION
+  DIRECTORATES
+  PRINCIPALS
+  EXAMINATION
 }

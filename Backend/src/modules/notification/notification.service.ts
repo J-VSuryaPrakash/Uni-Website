@@ -1,5 +1,6 @@
 import prisma from "../../DB/prisma";
 import { ApiError } from "../../utils/apiError";
+import type { Prisma } from "../../../generated/prisma/client";
 import type { createNotificationInput, updateNotificationInput } from "./notification.validation";
 
 
@@ -31,7 +32,7 @@ export class NotificationService {
                 category: category,
                 isActive: true
             },
-            include:{
+            include: {
                 department: true,
                 attachments: { include: { media: true } }
             },
@@ -43,7 +44,7 @@ export class NotificationService {
         return notifications;
     }
 
-    async getNotifications() {
+    async getAllNotifications() {
 
         const notifications = await prisma.notification.findMany({
             include:{
@@ -56,6 +57,73 @@ export class NotificationService {
         });
 
         return notifications;
+    }
+
+    async getNotifications(query: {
+        page?: string;
+        limit?: string;
+        category?: string;
+        search?: string;
+    }) {
+        try {
+            const {
+                page = "1",
+                limit = "5",
+                category,
+                search
+            } = query;
+
+            const pageNumber = parseInt(page, 10);
+            const limitNumber = parseInt(limit, 10);
+            const skip = (pageNumber - 1) * limitNumber;
+
+            const where: Prisma.NotificationWhereInput = {};
+
+            if (category && category !== "all") {
+                where.category = category;
+            }
+
+            if (search) {
+                where.title = {
+                    contains: search,
+                    mode: "insensitive",
+                };
+            }
+
+            const [notifications, total] = await Promise.all([
+                prisma.notification.findMany({
+                    where,
+                    skip,
+                    take: limitNumber,
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                    include: {
+                        department: true,
+                        attachments: {
+                            include: {
+                                media: true,
+                            },
+                        },
+                    },
+                }),
+                prisma.notification.count({ where }),
+            ]);
+
+            return {
+                notifications,
+                pagination: {
+                    page: pageNumber,
+                    limit: limitNumber,
+                    total,
+                    totalPages: Math.ceil(total / limitNumber),
+                },
+            };
+
+        } catch (error) {
+            console.error("Error fetching notifications:", error);
+            throw new ApiError(500, "Failed to fetch notifications");
+        }
     }
 
     async updateNotification(id: number, data: updateNotificationInput) {
