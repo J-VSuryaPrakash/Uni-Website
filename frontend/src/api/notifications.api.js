@@ -1,13 +1,16 @@
 import api from "./axios";
 
-export const getNotificationsByCategory = async (category) => {
-  const { data } = await api.get(`/notifications/public/${encodeURIComponent(category)}`);
-  return data.data;
-};
+export const getNotifications = async ({ page, limit = 5, category, search }) => {
+  const { data } = await api.get("/notifications/public", {
+    params: {
+      page,
+      limit,
+      category,
+      search,
+    },
+  });
 
-export const getAllActiveNotifications = async () => {
-  const { data } = await api.get("/notifications/public");
-  return (data.data ?? []).filter((n) => n.isActive);
+  return data.data;
 };
 
 export const getLiveScrollingNotifications = async () => {

@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { getNotificationsByCategory, getAllActiveNotifications } from "../api/notifications.api";
+import { getNotifications } from "../api/notifications.api";
 
-export function useNotifications(category) {
+export function useNotifications({ page, category, search }) {
   return useQuery({
-    queryKey: ["notifications", category],
+    queryKey: ["notifications", { page, category, search }],
     queryFn: () =>
-      category === "all"
-        ? getAllActiveNotifications()
-        : getNotificationsByCategory(category),
-    enabled: !!category,
+      getNotifications({
+        page,
+        category,
+        search,
+      }),
+    keepPreviousData: true,
     staleTime: 2 * 60 * 1000,
   });
 }

@@ -37,7 +37,12 @@ const Home = () => {
     const [activeTab, setActiveTab] = useState('notifications');
 
     // Fetch notifications by active tab (category)
-    const { data: notifications, isLoading: notifLoading } = useNotifications(activeTab);
+    const apiCategory = activeTab === 'all' ? undefined : activeTab;
+    const { data: notifications, isLoading: notifLoading } = useNotifications({
+        page: 1,
+        category: apiCategory,
+        limit: 5  // Show only 5 on homepage
+    });
 
     // Fetch events for happenings
     const { data: events } = useEvents();
@@ -145,95 +150,98 @@ const Home = () => {
             </section>
 
             {/* NOTIFICATION CENTER */}
-            <section className="py-16 px-4 bg-white">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-gray-100 pb-4">
-                        <div>
-                            <h2 className="text-3xl font-bold text-blue-900 uppercase tracking-tight">Notification Center</h2>
-                            <p className="text-gray-500 mt-2">Latest updates, circulars, and academic news.</p>
-                        </div>
-                        <Link to="/notifications" className="hidden md:flex items-center gap-2 px-5 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-colors">
-                            View Archive <ChevronRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div className="lg:col-span-12 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-
-                            {/* TAB HEADERS */}
-                            <div className="flex border-b border-gray-100 overflow-x-auto">
-                                {NOTIFICATION_TABS.map((tab) => (
-                                    <button
-                                        key={tab.key}
-                                        onClick={() => setActiveTab(tab.key)}
-                                        className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.key
-                                            ? 'border-blue-600 text-blue-600 bg-blue-50/50'
-                                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
+                <section className="py-16 px-4 bg-white">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-gray-100 pb-4">
+                            <div>
+                                <h2 className="text-3xl font-bold text-blue-900 uppercase tracking-tight">Notification Center</h2>
+                                <p className="text-gray-500 mt-2">Latest updates, circulars, and academic news.</p>
                             </div>
+                            <Link to="/notifications" className="hidden md:flex items-center gap-2 px-5 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-colors">
+                                View Archive <ChevronRight className="w-4 h-4" />
+                            </Link>
+                        </div>
 
-                            {/* TABLE CONTENT */}
-                            <div className="overflow-x-auto">
-                                {notifLoading ? (
-                                    <TableSkeleton rows={5} />
-                                ) : notifications && notifications.length > 0 ? (
-                                    <table className="w-full text-sm text-left">
-                                        <thead className="bg-gray-50 text-gray-600 font-semibold uppercase text-xs">
-                                            <tr>
-                                                <th className="px-6 py-4 rounded-tl-lg">S.No</th>
-                                                <th className="px-6 py-4">Date</th>
-                                                <th className="px-6 py-4 w-1/2">Notification</th>
-                                                {activeTab === 'all' && <th className="px-6 py-4">Category</th>}
-                                                <th className="px-6 py-4 rounded-tr-lg">Department</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-100">
-                                            {notifications.map((item, index) => (
-                                                <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
-                                                    <td className="px-6 py-4 text-gray-500 font-medium">{index + 1}.</td>
-                                                    <td className="px-6 py-4 text-blue-600 font-medium">
-                                                        {formatDate(item.createdAt)}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <Link
-                                                            to={`/notifications#notif-${item.id}`}
-                                                            className="text-gray-800 font-medium group-hover:text-blue-700 transition-colors hover:underline"
-                                                        >
-                                                            {item.title}
-                                                        </Link>
-                                                        {index < 2 && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800 animate-pulse">NEW</span>}
-                                                    </td>
-                                                    {activeTab === 'all' && (
-                                                        <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">
-                                                            {item.category
-                                                                ? NOTIFICATION_TABS.find((t) => t.key === item.category)?.label ?? item.category
-                                                                : <span className="text-gray-300">—</span>}
-                                                        </td>
-                                                    )}
-                                                    <td className="px-6 py-4 text-gray-500">
-                                                        {item.department?.name || '-'}
-                                                    </td>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            <div className="lg:col-span-12 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+                                {/* TAB HEADERS */}
+                                <div className="flex border-b border-gray-100 overflow-x-auto">
+                                    {NOTIFICATION_TABS.map((tab) => (
+                                        <button
+                                            key={tab.key}
+                                            onClick={() => setActiveTab(tab.key)}
+                                            className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.key
+                                                ? 'border-blue-600 text-blue-600 bg-blue-50/50'
+                                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            {tab.label}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* TABLE CONTENT */}
+                                <div className="overflow-x-auto">
+                                    {notifLoading ? (
+                                        <TableSkeleton rows={5} />
+                                    ) : notifications?.notifications && notifications.notifications.length > 0 ? (
+                                        <table className="w-full text-sm text-left">
+                                            <thead className="bg-gray-50 text-gray-600 font-semibold uppercase text-xs">
+                                                <tr>
+                                                    <th className="px-6 py-4 rounded-tl-lg">S.No</th>
+                                                    <th className="px-6 py-4">Date</th>
+                                                    <th className="px-6 py-4 w-1/2">Notification</th>
+                                                    {activeTab === 'all' && <th className="px-6 py-4">Category</th>}
+                                                    <th className="px-6 py-4 rounded-tr-lg">Department</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <div className="p-8 text-center text-gray-400">
-                                        No notifications found for this category.
-                                    </div>
-                                )}
-                            </div>
-                            <div className="p-4 bg-gray-50 flex justify-center md:hidden">
-                                <Link to="/notifications" className="text-sm font-semibold text-blue-600">View All Notifications</Link>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100">
+                                                {notifications.notifications.map((item, index) => (
+                                                    <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
+                                                        <td className="px-6 py-4 text-gray-500 font-medium">{index + 1}.</td>
+                                                        <td className="px-6 py-4 text-blue-600 font-medium whitespace-nowrap">
+                                                            {formatDate(item.createdAt)}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <Link
+                                                                to={`/notifications#notif-${item.id}`}
+                                                                className="text-gray-800 font-medium group-hover:text-blue-700 transition-colors hover:underline"
+                                                            >
+                                                                {item.title}
+                                                            </Link>
+                                                            {index < 2 && <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800 animate-pulse">NEW</span>}
+                                                        </td>
+                                                        {activeTab === 'all' && (
+                                                            <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">
+                                                                {item.category
+                                                                    ? NOTIFICATION_TABS.find((t) => t.key === item.category)?.label ?? item.category
+                                                                    : <span className="text-gray-300">—</span>}
+                                                            </td>
+                                                        )}
+                                                        <td className="px-6 py-4 text-gray-500">
+                                                            {item.department?.name || '—'}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                                            <Bell className="w-10 h-10 mb-3 opacity-30" />
+                                            <p className="font-medium text-gray-500">
+                                                No notifications found for this category.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-4 bg-gray-50 flex justify-center md:hidden">
+                                    <Link to="/notifications" className="text-sm font-semibold text-blue-600">View All Notifications</Link>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
             {/* HAPPENINGS SECTION */}
             {happenings.length > 0 && (
