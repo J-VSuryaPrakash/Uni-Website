@@ -1,6 +1,6 @@
 import type { BaseEntity } from "./Common.types";
 
-export type BlockType = "text" | "image" | "list" | "html" | "members" | "table" | "pdf" | "directorate";
+export type BlockType = "text" | "image" | "gallery" | "list" | "html" | "members" | "table" | "pdf" | "directorate";
 
 export interface ContentBlock extends BaseEntity {
 	sectionId: number;
@@ -17,4 +17,4 @@ export interface CreateBlockDTO {
 	isVisible?: boolean;
 }
 
-export interface UpdateBlockDTO extends Partial<CreateBlockDTO> {}
+export interface UpdateBlockDTO extends Partial<CreateBlockDTO> { }

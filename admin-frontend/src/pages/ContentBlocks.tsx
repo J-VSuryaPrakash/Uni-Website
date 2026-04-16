@@ -51,6 +51,7 @@ export default function ContentBlocks() {
 		textValue: "",
 		imageUrl: "",
 		imageAlt: "",
+		galleryImages: [],
 		htmlValue: "",
 		listItems: "",
 		membersValue: [],
@@ -111,14 +112,14 @@ export default function ContentBlocks() {
 			: [];
 		const membersValue = Array.isArray(content.members)
 			? content.members.map((m: any) => ({
-					name: m.name ?? "",
-					role: m.role ?? "Member",
-					photo: m.photo ?? "",
-					designation: m.designation ?? "",
-					department: m.department ?? "",
-					email: m.email ?? "",
-					phone: m.phone ?? "",
-				}))
+				name: m.name ?? "",
+				role: m.role ?? "Member",
+				photo: m.photo ?? "",
+				designation: m.designation ?? "",
+				department: m.department ?? "",
+				email: m.email ?? "",
+				phone: m.phone ?? "",
+			}))
 			: [];
 
 		// Table
@@ -127,10 +128,10 @@ export default function ContentBlocks() {
 			: [];
 		const tableRows = Array.isArray(content.rows)
 			? content.rows.map((row: any) =>
-					Array.isArray(row)
-						? row.map((cell: any) => String(cell))
-						: Object.values(row).map((cell: any) => String(cell)),
-				)
+				Array.isArray(row)
+					? row.map((cell: any) => String(cell))
+					: Object.values(row).map((cell: any) => String(cell)),
+			)
 			: [];
 
 		// PDF
@@ -138,7 +139,10 @@ export default function ContentBlocks() {
 			block?.blockType === "pdf" && typeof content.url === "string"
 				? content.url
 				: "";
-
+		// Gallery
+		const galleryImages = Array.isArray(content.images)
+			? content.images.filter((img: any) => typeof img === "string")
+			: [];
 		// Directorate
 		const directorateIds = Array.isArray(content.directorateIds)
 			? content.directorateIds.filter((id: any) => typeof id === "number")
@@ -158,6 +162,7 @@ export default function ContentBlocks() {
 							: ""
 					: "",
 			imageAlt: typeof content.alt === "string" ? content.alt : "",
+			galleryImages,
 			htmlValue: typeof content.html === "string" ? content.html : "",
 			listItems: listItems.join("\n"),
 			membersValue,
@@ -169,7 +174,7 @@ export default function ContentBlocks() {
 			pdfTitle: typeof content.title === "string" ? content.title : "",
 			directorateTitle:
 				block?.blockType === "directorate" &&
-				typeof content.title === "string"
+					typeof content.title === "string"
 					? content.title
 					: "",
 			directorateIds,
@@ -228,6 +233,16 @@ export default function ContentBlocks() {
 				}
 				const alt = formState.imageAlt.trim();
 				return alt ? { url, alt } : { url };
+			}
+			case "gallery": {
+				if (formState.galleryImages.length === 0) {
+					toast.error("Upload at least one image");
+					return null;
+				}
+
+				return {
+					images: formState.galleryImages, 
+				};
 			}
 			case "list": {
 				const items = formState.listItems
@@ -345,7 +360,7 @@ export default function ContentBlocks() {
 								onError: (error: any) =>
 									toast.error(
 										error?.message ||
-											"Failed to update positions",
+										"Failed to update positions",
 									),
 							});
 						}
@@ -373,7 +388,7 @@ export default function ContentBlocks() {
 							onError: (error: any) =>
 								toast.error(
 									error?.message ||
-										"Failed to update positions",
+									"Failed to update positions",
 								),
 						});
 					}

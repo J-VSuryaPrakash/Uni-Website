@@ -17,6 +17,7 @@ export interface BlockFormState {
 	textValue: string;
 	imageUrl: string;
 	imageAlt: string;
+	galleryImages: string[];
 	htmlValue: string;
 	listItems: string;
 	membersValue: MemberEntry[];
@@ -29,4 +30,4 @@ export interface BlockFormState {
 	directorateIds: number[];
 }
 
-export const blockTypeOptions: BlockType[] = ["text", "image", "list", "html", "members", "table", "pdf", "directorate"];
+export const blockTypeOptions: BlockType[] = ["text", "image", "gallery", "list", "html", "members", "table", "pdf", "directorate"];

@@ -76,11 +76,11 @@ export default function ContentBlockFormDialog({
 		if (open) {
 			setIsUploadedFile(
 				!!formState.imageUrl &&
-					formState.imageUrl.startsWith("/uploads/"),
+				formState.imageUrl.startsWith("/uploads/"),
 			);
 			setIsPdfUploadedFile(
 				!!formState.pdfUrl &&
-					formState.pdfUrl.startsWith("/uploads/"),
+				formState.pdfUrl.startsWith("/uploads/"),
 			);
 		}
 	}, [open]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -101,6 +101,35 @@ export default function ContentBlockFormDialog({
 		} finally {
 			setIsUploading(false);
 			if (fileInputRef.current) fileInputRef.current.value = "";
+		}
+	};
+
+	const handleGalleryUpload = async (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const files = Array.from(e.target.files || []);
+		if (!files.length) return;
+
+		setIsUploading(true);
+
+		try {
+			const uploadedUrls: string[] = [];
+
+			for (const file of files) {
+				const media = await uploadFile(file, "general");
+				uploadedUrls.push(media.url);
+			}
+
+			setFormState(prev => ({
+				...prev,
+				galleryImages: [...prev.galleryImages, ...uploadedUrls],
+			}));
+
+			toast.success("Images uploaded");
+		} catch {
+			toast.error("Gallery upload failed");
+		} finally {
+			setIsUploading(false);
 		}
 	};
 
@@ -374,6 +403,58 @@ export default function ContentBlockFormDialog({
 										placeholder="Describe the image for accessibility"
 									/>
 								</div>
+							</div>
+						) : null}
+
+						{formState.blockType === "gallery" ? (
+							<div className="grid gap-3">
+
+								{/* hidden input */}
+								<input
+									ref={fileInputRef}
+									type="file"
+									accept="image/*"
+									multiple
+									className="hidden"
+									onChange={handleGalleryUpload}
+								/>
+
+								{/* upload button */}
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={isUploading}
+									onClick={() => fileInputRef.current?.click()}
+								>
+									{isUploading ? "Uploading..." : "Upload Images"}
+								</Button>
+
+								{/* preview */}
+								<div className="grid grid-cols-4 gap-2">
+									{(formState.galleryImages ?? []).map((img, index) => (
+										<div key={index} className="relative">
+											<img
+												src={resolveImageUrl(img)}
+												className="w-full h-20 object-cover rounded"
+											/>
+
+											<button
+												type="button"
+												onClick={() =>
+													setFormState(prev => ({
+														...prev,
+														galleryImages: prev.galleryImages.filter((_, i) => i !== index),
+													}))
+												}
+												className="absolute top-1 right-1 text-xs bg-black/50 text-white px-1 rounded"
+											>
+												X
+											</button>
+										</div>
+									))}
+								</div>
+
 							</div>
 						) : null}
 

@@ -42,6 +42,10 @@ function formatContentPreview(block: ContentBlock): string {
 			return typeof c.url === "string"
 				? c.url.split("/").pop() ?? c.url
 				: "";
+		case "gallery":
+			return Array.isArray(c.images)
+				? `${c.images.length} image${c.images.length !== 1 ? "s" : ""}`
+				: "";
 		case "list":
 			return Array.isArray(c.items)
 				? `${c.items.length} item${c.items.length !== 1 ? "s" : ""}`
@@ -123,6 +127,7 @@ export default function SectionBlocks() {
 		textValue: "",
 		imageUrl: "",
 		imageAlt: "",
+		galleryImages: [],
 		htmlValue: "",
 		listItems: "",
 		membersValue: [],
@@ -157,24 +162,24 @@ export default function SectionBlocks() {
 			: [];
 		const membersValue = Array.isArray(c.members)
 			? c.members.map((m: any) => ({
-					name: m.name ?? "",
-					role: m.role ?? "Member",
-					photo: m.photo ?? "",
-					designation: m.designation ?? "",
-					department: m.department ?? "",
-					email: m.email ?? "",
-					phone: m.phone ?? "",
-				}))
+				name: m.name ?? "",
+				role: m.role ?? "Member",
+				photo: m.photo ?? "",
+				designation: m.designation ?? "",
+				department: m.department ?? "",
+				email: m.email ?? "",
+				phone: m.phone ?? "",
+			}))
 			: [];
 		const tableHeaders = Array.isArray(c.headers)
 			? c.headers.map((h: any) => String(h))
 			: [];
 		const tableRows = Array.isArray(c.rows)
 			? c.rows.map((row: any) =>
-					Array.isArray(row)
-						? row.map((cell: any) => String(cell))
-						: Object.values(row).map((cell: any) => String(cell)),
-				)
+				Array.isArray(row)
+					? row.map((cell: any) => String(cell))
+					: Object.values(row).map((cell: any) => String(cell)),
+			)
 			: [];
 		const pdfUrl =
 			block?.blockType === "pdf" && typeof c.url === "string"
@@ -183,7 +188,9 @@ export default function SectionBlocks() {
 		const directorateIds = Array.isArray(c.directorateIds)
 			? c.directorateIds.filter((id: any) => typeof id === "number")
 			: [];
-
+		const galleryImages = Array.isArray(c.images)
+			? c.images.filter((img: any) => typeof img === "string")
+			: [];
 		return {
 			blockType: block?.blockType ?? "text",
 			position: block?.position ?? (blocks?.length ?? 0),
@@ -198,6 +205,7 @@ export default function SectionBlocks() {
 							: ""
 					: "",
 			imageAlt: typeof c.alt === "string" ? c.alt : "",
+			galleryImages,
 			htmlValue: typeof c.html === "string" ? c.html : "",
 			listItems: listItems.join("\n"),
 			membersValue,
@@ -209,7 +217,7 @@ export default function SectionBlocks() {
 			pdfTitle: typeof c.title === "string" ? c.title : "",
 			directorateTitle:
 				block?.blockType === "directorate" &&
-				typeof c.title === "string"
+					typeof c.title === "string"
 					? c.title
 					: "",
 			directorateIds,
@@ -234,6 +242,16 @@ export default function SectionBlocks() {
 				}
 				const alt = formState.imageAlt.trim();
 				return alt ? { url, alt } : { url };
+			}
+			case "gallery": {
+				if (formState.galleryImages.length === 0) {
+					toast.error("Upload at least one image");
+					return null;
+				}
+
+				return {
+					images: formState.galleryImages,
+				};
 			}
 			case "list": {
 				const items = formState.listItems
@@ -368,7 +386,7 @@ export default function SectionBlocks() {
 									onError: (e: any) =>
 										toast.error(
 											e?.message ||
-												"Failed to update positions",
+											"Failed to update positions",
 										),
 								},
 							);
@@ -395,7 +413,7 @@ export default function SectionBlocks() {
 								onError: (e: any) =>
 									toast.error(
 										e?.message ||
-											"Failed to update positions",
+										"Failed to update positions",
 									),
 							},
 						);
