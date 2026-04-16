@@ -4,7 +4,6 @@ import { ApiResponse } from "../../utils/apiResponse";
 import { ApiError } from "../../utils/apiError";
 import prisma from "../../DB/prisma";
 import { uploadOnImageKit, imagekit } from "../../utils/imagekitIO";
-import { createMedia } from "../media/media.controller";
 
 const folderMap: Record<string, string> = {
   notifications: "/notifications",
