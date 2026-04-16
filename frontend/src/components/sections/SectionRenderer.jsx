@@ -17,6 +17,7 @@ const SectionRenderer = ({ section }) => {
             )}
             <div className="space-y-4">
                 {blocks.map((block) => (
+                    console.log("Rendering block:", block),
                     <ContentBlockRenderer key={block.id} block={block} />
                 ))}
             </div>

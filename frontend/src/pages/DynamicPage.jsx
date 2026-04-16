@@ -50,7 +50,7 @@ const DynamicPage = () => {
         <SidebarLayout title={sectionTitle} menuItems={sidebarItems}>
             <div className="py-2">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6">{page.title}</h1>
-
+                    {console.log("SECTIONS:", sections)}
                 {sections.map((section) => (
                     <SectionRenderer key={section.id} section={section} />
                 ))}
