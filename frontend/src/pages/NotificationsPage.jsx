@@ -203,7 +203,7 @@ const NotificationsPage = () => {
             </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold">
-            Notification Center
+            Notification Centre
           </h1>
           <p className="text-blue-200 mt-2 text-sm">
             Stay informed with the latest circulars, tenders, and academic
