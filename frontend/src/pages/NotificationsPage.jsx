@@ -56,7 +56,7 @@ const TABS = [
   { label: "Workshops & Conferences", key: "workshops" },
   { label: "Examination Section", key: "examination" },
   { label: "Tenders", key: "tenders" },
-  { label: "General", key: "general" },
+  // { label: "General", key: "general" },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
