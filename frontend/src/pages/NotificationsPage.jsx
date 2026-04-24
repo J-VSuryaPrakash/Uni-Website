@@ -301,7 +301,7 @@ const NotificationsPage = () => {
                     {category === "all" && (
                       <th className="px-5 py-3">Category</th>
                     )}
-                    <th className="px-5 py-3">Department</th>
+                    {/* <th className="px-5 py-3">Department</th> */}
                     <th className="px-5 py-3 rounded-tr-lg">Attachment</th>
                   </tr>
                 </thead>
@@ -379,9 +379,9 @@ const NotificationsPage = () => {
                         )}
 
                         {/* Department */}
-                        <td className="px-5 py-4 text-gray-500 text-xs whitespace-nowrap">
+                        {/* <td className="px-5 py-4 text-gray-500 text-xs whitespace-nowrap">
                           {item.department?.name || "—"}
-                        </td>
+                        </td> */}
 
                         {/* Attachments */}
                         <td className="px-5 py-4">
