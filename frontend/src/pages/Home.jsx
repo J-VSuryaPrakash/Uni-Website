@@ -75,12 +75,12 @@ const Home = () => {
     };
 
     const portals = [
-        { label: "JNTUK Placement Cell", icon: <Briefcase className="w-8 h-8 text-purple-600" />, color: "bg-purple-50" },
-        { label: "JNTUK DAFLM", icon: <BookOpen className="w-8 h-8 text-yellow-600" />, color: "bg-yellow-50" },
-        { label: "JNTUK NSS", icon: <Users className="w-8 h-8 text-blue-600" />, color: "bg-blue-50" },
-        { label: "JNTUK ARC", icon: <Activity className="w-8 h-8 text-red-600" />, color: "bg-red-50" },
-        { label: "JNTUK DCA & IR", icon: <Globe className="w-8 h-8 text-indigo-600" />, color: "bg-indigo-50" },
-        { label: "AICTE", icon: <Award className="w-8 h-8 text-orange-600" />, color: "bg-orange-50" },
+        { label: "JNTUK Placement Cell", icon: <Briefcase className="w-8 h-8 text-purple-600" />, color: "bg-purple-50" , url: "https://jntuk.edu.in/placementcell" },
+        { label: "JNTUK DAFLM", icon: <BookOpen className="w-8 h-8 text-yellow-600" />, color: "bg-yellow-50", url: "https://jntukdaaportal.in/" },
+        { label: "JNTUK NSS", icon: <Users className="w-8 h-8 text-blue-600" />, color: "bg-blue-50", url: "https://jntuknss.org/" },
+        { label: "JNTUK ARC", icon: <Activity className="w-8 h-8 text-red-600" />, color: "bg-red-50", url: "https://jntuk.edu.in/arc" },
+        { label: "JNTUK DCA & IR", icon: <Globe className="w-8 h-8 text-indigo-600" />, color: "bg-indigo-50", url: "https://dfur.jntuk.edu.in/" },
+        { label: "AICTE", icon: <Award className="w-8 h-8 text-orange-600" />, color: "bg-orange-50", url: "https://www.aicte-india.org/" },
     ];
 
     // Safe current happening index
@@ -193,7 +193,7 @@ const Home = () => {
                                                     <th className="px-6 py-4">Date</th>
                                                     <th className="px-6 py-4 w-1/2">Notification</th>
                                                     {activeTab === 'all' && <th className="px-6 py-4">Category</th>}
-                                                    <th className="px-6 py-4 rounded-tr-lg">Department</th>
+                                                    {/* <th className="px-6 py-4 rounded-tr-lg">Department</th> */}
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-100">
@@ -219,9 +219,9 @@ const Home = () => {
                                                                     : <span className="text-gray-300">—</span>}
                                                             </td>
                                                         )}
-                                                        <td className="px-6 py-4 text-gray-500">
+                                                        {/* <td className="px-6 py-4 text-gray-500">
                                                             {item.department?.name || '—'}
-                                                        </td>
+                                                        </td> */}
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -337,7 +337,7 @@ const Home = () => {
                         {portals.map((portal) => (
                             <a
                                 key={portal.label}
-                                href="#"
+                                href={portal.url}
                                 className="group relative bg-white p-5 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_25px_rgb(0,0,0,0.06)] transition-all duration-500 flex flex-col items-center justify-center text-center gap-3 border border-gray-50 hover:border-blue-100 hover:-translate-y-1 overflow-hidden"
                             >
                                 <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full ${portal.color} opacity-20 blur-xl group-hover:scale-150 transition-transform duration-700`}></div>
