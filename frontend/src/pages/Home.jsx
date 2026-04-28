@@ -75,7 +75,7 @@ const Home = () => {
     };
 
     const portals = [
-        { label: "JNTUK Placement Cell", icon: <Briefcase className="w-8 h-8 text-purple-600" />, color: "bg-purple-50" , url: "https://jntuk.edu.in/placementcell" },
+        { label: "JNTUK Placement Cell", icon: <Briefcase className="w-8 h-8 text-purple-600" />, color: "bg-purple-50" , url: "https://placement-cell-opal.vercel.app/" },
         { label: "JNTUK DAFLM", icon: <BookOpen className="w-8 h-8 text-yellow-600" />, color: "bg-yellow-50", url: "https://jntukdaaportal.in/" },
         { label: "JNTUK NSS", icon: <Users className="w-8 h-8 text-blue-600" />, color: "bg-blue-50", url: "https://nssproject-bpb1.vercel.app/" },
         { label: "JNTUK ARC", icon: <Activity className="w-8 h-8 text-red-600" />, color: "bg-red-50", url: "https://jntuk.edu.in/arc" },
